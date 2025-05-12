@@ -1,0 +1,7 @@
+{
+  "name": "Hyperspace D6 Character Sheet",
+  "version": "1.0.0",
+  "description": "Custom Star Wars D6 character sheet with GM tools and Supabase support",
+  "type": "widget",
+  "entry": "index.html"
+}

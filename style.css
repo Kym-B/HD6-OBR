@@ -1,0 +1,99 @@
+
+:root {
+  --bg-color: #f9f9f9;
+  --text-color: #111;
+  --accent-color: #007bff;
+  --section-bg: #ffffff;
+  --border-color: #ccc;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+body.light {
+  --bg-color: #f9f9f9;
+  --text-color: #111;
+  --accent-color: #007bff;
+  --section-bg: #ffffff;
+  --border-color: #ccc;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+body.dark {
+  --bg-color: #1c1c1c;
+  --text-color: #f9f9f9;
+  --accent-color: #00bfff;
+  --section-bg: #2c2c2c;
+  --border-color: #444;
+  --shadow: rgba(255, 255, 255, 0.05);
+}
+
+body.starwars {
+  --bg-color: #000;
+  --text-color: #ffe81f;
+  --accent-color: #ffe81f;
+  --section-bg: #111;
+  --border-color: #222;
+  --shadow: rgba(255, 255, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 1em;
+  max-width: 950px;
+  margin: auto;
+}
+
+h1 {
+  color: var(--accent-color);
+  text-align: center;
+}
+
+fieldset {
+  margin: 1em 0;
+  padding: 1em;
+  background: var(--section-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+
+legend {
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+input, select, button {
+  margin: 0.3em 0.5em 0.3em 0;
+  padding: 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+button {
+  background-color: var(--accent-color);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+section h3 {
+  margin-top: 1em;
+  color: var(--accent-color);
+}
+
+#weapon-list, #equipment-list, #armor-selected {
+  margin-top: 0.5em;
+  padding: 0.5em;
+  background: var(--bg-color);
+  border: 1px dashed var(--accent-color);
+  min-height: 2em;
+}
+
+#initiative-order li {
+  margin: 0.25em 0;
+}
