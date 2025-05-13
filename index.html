@@ -13,11 +13,10 @@
   </div>
 
   <form id="character-form">
-    <fieldset id="all-attributes">
+    <fieldset id="all-attributes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
       <legend>Attributes & Skills</legend>
       
-       <fieldset>
-      <legend>DEX (Dexterity)</legend>
+       <fieldset style="min-width: 280px;"><legend>DEX (Dexterity)</legend>
       
       <label>DEX (Dexterity): <input type="number" id="attr-dex" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
@@ -28,8 +27,8 @@
         <li><label>Throw: <input type="number" id="skill-throw" min="0" max="6"></label></li>
       </ul>
           </fieldset>
-     <fieldset>
-      <label>STR (Strength) <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
+     <fieldset style="min-width: 280px;"><legend>STR (Strength)</legend>
+      <label>STR (Strength) <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label> <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
         <li><label>Athletics: <input type="number" id="skill-athletics" min="0" max="6"></label></li>
         <li><label>Brawl: <input type="number" id="skill-brawl" min="0" max="6"></label></li>
@@ -39,8 +38,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
-      <legend>KNO (Knowledge)</legend>
+    <fieldset style="min-width: 280px;"><legend>KNO (Knowledge)</legend>
       <label>KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
       <ul>
         <li><label>Galaxy: <input type="number" id="skill-galaxy" min="0" max="6"></label></li>
@@ -51,8 +49,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
-      <legend>MEC (Mechanical)</legend>
+    <fieldset style="min-width: 280px;"><legend>MEC (Mechanical)</legend>
       <label>MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
       <ul>
         <li><label>Astrogation: <input type="number" id="skill-astrogation" min="0" max="6"></label></li>
@@ -63,8 +60,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
-      <legend>PER (Perception)</legend>
+    <fieldset style="min-width: 280px;"><legend>PER (Perception)</legend>
       <label>PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
         <li><label>Deceive: <input type="number" id="skill-deceive" min="0" max="6"></label></li>
@@ -75,8 +71,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
-      <legend>TEC (Technical)</legend>
+    <fieldset style="min-width: 280px;"><legend>TEC (Technical)</legend>
       <label>TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
       <ul>
         <li><label>Armament: <input type="number" id="skill-armament" min="0" max="6"></label></li>
@@ -87,8 +82,7 @@
       </ul>
     </fieldset>
 
-    <fieldset>
-      <legend>THE FORCE</legend>
+    <fieldset style="min-width: 280px;"><legend>THE FORCE</legend>
       <label>THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
       <ul>
         <li><label>Alter: <input type="number" id="skill-alter" min="0" max="6"></label></li>
