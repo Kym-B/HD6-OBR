@@ -102,15 +102,18 @@ window.addEventListener('DOMContentLoaded', () => {
   if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 });
 
+function setInitialAttributesIfEmpty() {
+  const attrs = ['str', 'dex', 'per', 'kno', 'mec', 'tec', 'force'];
+  attrs.forEach(id => {
+    const el = document.getElementById(`attr-${id}`);
+    if (el && (!el.value || el.value === '')) {
+      el.value = 1;
+    }
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  // Set default values for attributes that must not drop below 1
-  document.getElementById('attr-str').value ||= 1;
-  document.getElementById('attr-dex').value ||= 1;
-  document.getElementById('attr-per').value ||= 1;
-  document.getElementById('attr-kno').value ||= 1;
-  document.getElementById('attr-mec').value ||= 1;
-  document.getElementById('attr-tec').value ||= 1;
-  document.getElementById('attr-force').value ||= 1;
+  setInitialAttributesIfEmpty();
 
   const tokenId = new URLSearchParams(window.location.search).get('tokenId');
   if (tokenId) document.body.dataset.tokenId = tokenId;
