@@ -50,6 +50,12 @@ function loadSupabaseItems(table, dropdownId) {
 }
 let supabase;
 
+function toggleTheme() {
+  const body = document.body;
+  body.classList.toggle('dark');
+  body.classList.toggle('light');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const tokenId = new URLSearchParams(window.location.search).get('tokenId');
   if (tokenId) document.body.dataset.tokenId = tokenId;
