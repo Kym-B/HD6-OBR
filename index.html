@@ -1,525 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hyperspace D6 Character Sheet</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">document.addEventListener('dragover', function (e) {
-  clearTimeout(window.dragLeaveTimeout);
-  document.getElementById('drop-message').style.display = 'block';
-  document.body.classList.add('dragover');
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'copy';
-  window.dragLeaveTimeout = setTimeout(() => {
-    document.getElementById('drop-message').style.display = 'none';
-    document.body.classList.remove('dragover');
-  }, 5000);
-});
-
-document.addEventListener('drop', function (e) {
-  clearTimeout(window.dragLeaveTimeout);
-  document.getElementById('drop-message').style.display = 'none';
-  document.body.classList.remove('dragover');
-  e.preventDefault();
-  if (e.dataTransfer.files.length === 0) return;
-  const file = e.dataTransfer.files[0];
-  if (!file.name.endsWith('.json')) return alert('Only JSON files are supported for import.');
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const data = JSON.parse(event.target.result);
-    for (const key in data) {
-    const el = document.getElementById(key);
-      if (el) {
-        if (el.type === 'checkbox') {
-          el.checked = data[key];
-        } else {
-          el.value = data[key];
-        }
-      }
-    }
-    document.getElementById('weapon-list').innerHTML = '';
-    (data.weapons || []).forEach(w => {
-      const div = document.createElement('div');
-      div.textContent = w;
-      document.getElementById('weapon-list').appendChild(div);
-    });
-    document.getElementById('armor-selected').textContent = data.armor || '';
-    document.getElementById('equipment-list').innerHTML = '';
-    (data.equipment || []).forEach(e => {
-      const div = document.createElement('div');
-      div.textContent = e;
-      document.getElementById('equipment-list').appendChild(div);
-    });
-    alert('Character imported from JSON.');
-  };
-  reader.readAsText(file);
-});
-let initiativeData = [];
-let round = 1;
-let turn = 1;
-
-function sortByInitiative() {
-  supabase.from('characters')
-    .select('name, role, initiative')
-    .order('initiative', { ascending: false })
-    .then(({ data, error }) => {
-      if (error) return alert('Failed to sort initiative');
-      initiativeData = data;
-      round = 1;
-      turn = 1;
-      document.getElementById('current-round').textContent = round;
-      document.getElementById('current-turn').textContent = turn;
-      renderInitiativeList();
-    });
-}
-
-function renderInitiativeList() {
-  const list = document.getElementById('initiative-order');
-  list.innerHTML = '';
-  initiativeData.forEach((entry, index) => {
-    const li = document.createElement('li');
-    li.textContent = `${index + 1}. ${entry.name} (${entry.role}) - ${entry.initiative || 0}`;
-    li.dataset.index = index;
-
-    const status = document.createElement('span');
-    status.style.marginLeft = '10px';
-
-    const skipBtn = document.createElement('button');
-    skipBtn.textContent = 'Skip';
-    skipBtn.onclick = () => {
-      li.classList.toggle('skipped');
-      skipBtn.textContent = li.classList.contains('skipped') ? 'Unskip' : 'Skip';
-    };
-
-    const delayBtn = document.createElement('button');
-    delayBtn.textContent = 'Delay';
-    delayBtn.onclick = () => {
-      li.classList.toggle('delayed');
-      delayBtn.textContent = li.classList.contains('delayed') ? 'Undelay' : 'Delay';
-    };
-
-    status.appendChild(skipBtn);
-    status.appendChild(delayBtn);
-    li.appendChild(status);
-
-    if (index === turn - 1) {
-      li.style.fontWeight = 'bold';
-      li.style.color = '#007bff';
-    }
-
-    list.appendChild(li);
-  });
-}
-
-function nextTurn() {
-  if (initiativeData.length === 0) return;
-  turn++;
-  if (turn > initiativeData.length) {
-    turn = 1;
-    round++;
-    document.getElementById('current-round').textContent = round;
-  }
-  document.getElementById('current-turn').textContent = turn;
-  renderInitiativeList();
-}
-  document.getElementById('current-turn').textContent = turn;
-  renderInitiativeList();
-}
-function resetInitiativeTracker() {
-  round = 1;
-  turn = 1;
-  initiativeData = [];
-  document.getElementById('current-round').textContent = round;
-  document.getElementById('current-turn').textContent = turn;
-  document.getElementById('initiative-order').innerHTML = '';
-}
-// Owlbear Token Integration
-function assignCharacterToToken(tokenId, characterName) {
-  if (!window.owlbear) return;
-  window.owlbear.setTokenMetadata(tokenId, {
-    character: characterName
-  });
-}
-
-function getAssignedCharacterForToken(tokenId) {
-  if (!window.owlbear) return null;
-  const meta = window.owlbear.getTokenMetadata(tokenId);
-  return meta?.character || null;
-}
-
-function linkCharacterToSelectedToken() {
-  if (!window.owlbear) return alert('Not connected to Owlbear Rodeo.');
-  const selectedToken = window.owlbear.getSelectedTokens()[0];
-  const charName = document.getElementById('char-name').value;
-  if (!selectedToken || !charName) return alert('Select a token and enter a character name first.');
-  assignCharacterToToken(selectedToken.id, charName);
-  alert(`Linked ${charName} to token.`);
-  document.getElementById('token-info').textContent = `Token linked to: ${charName}`;
-}
-
-// Listen for token selection change
-if (window.owlbear) {
-  window.owlbear.onTokenSelected(async tokens => {
-    const selected = tokens[0];
-    const info = document.getElementById('token-info');
-    if (!selected) {
-      info.textContent = 'No token selected';
-      return;
-    }
-
-    const linked = getAssignedCharacterForToken(selected.id);
-    if (!linked) {
-      info.textContent = 'Token not linked to a character';
-      return;
-    }
-
-    info.textContent = `Token linked to: ${linked}`;
-
-    const { data, error } = await supabase
-      .from('characters')
-      .select('*')
-      .eq('name', linked)
-      .eq('created_by', window.currentUserEmail)
-      .single();
-
-    if (error || !data) {
-      alert(`Character data for ${linked} not found.`);
-      return;
-    }
-
-    document.getElementById('char-name').value = data.name;
-    document.getElementById('char-role').value = data.role;
-    document.getElementById('char-species').value = data.species;
-    document.getElementById('char-homeworld').value = data.homeworld;
-    document.getElementById('char-sex').value = data.sex;
-    document.getElementById('char-age').value = data.age;
-    document.getElementById('char-height').value = data.height;
-    document.getElementById('char-weight').value = data.weight;
-    document.getElementById('char-looks').value = data.looks;
-    document.getElementById('char-personality').value = data.personality;
-    document.getElementById('char-quote').value = data.quote;
-    document.getElementById('char-edge').value = data.edge || '';
-    document.getElementById('char-edge-notes').value = data.edge_notes || '';
-    document.getElementById('char-burden').value = data.burden || '';
-    document.getElementById('char-burden-notes').value = data.burden_notes || '';
-
-    document.getElementById('stat-defense').value = data.defense;
-    document.getElementById('stat-initiative').value = data.initiative;
-    document.getElementById('stat-resolve').value = data.resolve;
-    document.getElementById('current-resolve').value = data.current_resolve;
-
-    document.getElementById('status-staggered').checked = data.status?.staggered || false;
-    document.getElementById('status-stunned').checked = data.status?.stunned || false;
-    document.getElementById('status-downed').checked = data.status?.downed || false;
-
-    document.getElementById('weapon-list').innerHTML = '';
-    (data.weapons || []).forEach(w => {
-      const div = document.createElement('div');
-      div.textContent = w;
-      document.getElementById('weapon-list').appendChild(div);
-    });
-
-    document.getElementById('armor-selected').textContent = data.armor || '';
-
-    document.getElementById('equipment-list').innerHTML = '';
-    (data.equipment || []).forEach(e => {
-      const div = document.createElement('div');
-      div.textContent = e;
-      document.getElementById('equipment-list').appendChild(div);
-    });
-  });
-}
-  });
-} to token.`);
-}
-async function createEncounter() {
-  const name = document.getElementById('encounter-name').value;
-  if (!name) return alert('Please enter an encounter name.');
-  const { error } = await supabase.from('encounters').insert({ name });
-  if (error) {
-    console.error(error);
-    alert('Failed to create encounter.');
-  } else {
-    alert('Encounter created.');
-    loadEncounters();
-  }
-}
-
-async function loadEncounters() {
-  const list = document.getElementById('encounter-list');
-  list.innerHTML = '<option value="">-- Select Encounter --</option>';
-  const { data, error } = await supabase.from('encounters').select('*').order('name');
-  if (error) return console.error(error);
-  data.forEach(e => {
-    const opt = document.createElement('option');
-    opt.value = e.id;
-    opt.textContent = e.name;
-    list.appendChild(opt);
-  });
-}
-
-async function addCharacterToEncounter() {
-  const encounterId = document.getElementById('encounter-list').value;
-  const characterName = document.getElementById('character-list').value;
-  if (!encounterId || !characterName) return alert('Select an encounter and a character.');
-  const { error } = await supabase.from('encounter_characters').insert({ encounter_id: encounterId, character_name: characterName });
-  if (error) {
-    console.error(error);
-    alert('Failed to add character to encounter.');
-  } else {
-    alert(`${characterName} added to encounter.`);
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const autoStats = ['attr-str', 'attr-per'];
-  autoStats.forEach(id => document.getElementById(id).addEventListener('input', updateDerivedStats));
-  updateDerivedStats();
-  loadSupabaseItems('edges', 'char-edge');
-  loadSupabaseItems('burdens', 'char-burden');
-  loadSupabaseItems('roles', 'char-role');
-  loadSupabaseItems('species', 'char-species');
-  loadEncounters();
-});
-async function loadCharactersFromEncounter() {
-  const encounterId = document.getElementById('encounter-list').value;
-  const dropdown = document.getElementById('character-list');
-  if (!encounterId) return alert('Select an encounter first.');
-  const { data: links, error: linkError } = await supabase.from('encounter_characters').select('character_name').eq('encounter_id', encounterId);
-  if (linkError) return alert('Failed to fetch characters for encounter.');
-  const names = links.map(l => l.character_name);
-  const { data: chars, error } = await supabase.from('characters').select('*').in('name', names);
-  if (error) return alert('Failed to load character data.');
-  dropdown.innerHTML = '<option value="">-- Select Character --</option>';
-  chars.forEach(char => {
-    const option = document.createElement('option');
-    option.value = char.name;
-    option.textContent = `${char.name} (${char.role})`;
-    dropdown.appendChild(option);
-  });
-}
-function validateRequiredChoices() {
-  const edge = document.getElementById('char-edge').value;
-  const burden = document.getElementById('char-burden').value;
-  const role = document.getElementById('char-role').value;
-  const species = document.getElementById('char-species').value;
-  if (!edge || !burden) {
-    alert('Please select both an Edge and a Burden.');
-    return false;
-  }
-  if (!role || !species) {
-    alert('Please select both a Role and a Species.');
-    return false;
-  }
-
-  // Attribute validation (1D to 6D)
-  const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
-  for (const attr of attrFields) {
-    const val = parseFloat(document.getElementById('attr-' + attr).value);
-    if (isNaN(val) || val < 1 || val > 6) {
-      alert(`Attribute ${attr.toUpperCase()} must be between 1D and 6D.`);
-      return false;
-    }
-  }
-
-  // Skill validation (0 to 6)
-  const skillFields = Array.from(document.querySelectorAll('[id^="skill-"]'));
-  for (const field of skillFields) {
-    const val = parseInt(field.value);
-    if (!isNaN(val) && (val < 0 || val > 6)) {
-      alert(`${field.placeholder} must be between 0 and +6.`);
-      return false;
-    }
-  }
-  return true;
-}
-function clearInlineErrors() {
-  document.querySelectorAll('.validation-error').forEach(el => el.remove());
-}
-
-function showInlineError(input, message) {
-  const err = document.createElement('div');
-  err.className = 'validation-error';
-  err.style.color = 'red';
-  err.style.fontSize = '0.85em';
-  err.textContent = message;
-  input.parentNode.insertBefore(err, input.nextSibling);
-}
-
-function validateRequiredChoices() {
-  clearInlineErrors();
-  let valid = true;
-  const edge = document.getElementById('char-edge');
-  const burden = document.getElementById('char-burden');
-  const role = document.getElementById('char-role');
-  const species = document.getElementById('char-species');
-  [edge, burden, role, species].forEach(field => {
-    if (!field.value) {
-      showInlineError(field, `This field is required.`);
-      valid = false;
-    }
-  });
-
-  const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
-  for (const attr of attrFields) {
-    const el = document.getElementById('attr-' + attr);
-    const val = parseFloat(el.value);
-    if (isNaN(val) || val < 1 || val > 6) {
-      showInlineError(el, `${attr.toUpperCase()} must be between 1D and 6D.`);
-      valid = false;
-    }
-  }
-  const skillFields = Array.from(document.querySelectorAll('[id^="skill-"]'));
-  for (const field of skillFields) {
-    const val = parseInt(field.value);
-    if (!isNaN(val) && (val < 0 || val > 6)) {
-      showInlineError(field, `${field.placeholder} must be between 0 and +6.`);
-      valid = false;
-    }
-  }
-  return valid;
-}
-function updateDerivedStats() {
-  const str = parseFloat(document.getElementById('attr-str').value) || 0;
-  const per = parseFloat(document.getElementById('attr-per').value) || 0;
-  document.getElementById('stat-defense').value = Math.round(str + 6);
-  document.getElementById('stat-initiative').value = Math.round(per + 6);
-  document.getElementById('stat-resolve').value = Math.round(str + 6);
-}
-</script>
-<style>
-  .skipped {
-    text-decoration: line-through;
-    opacity: 0.6;
-  }
-  .delayed {
-    background-color: #fff3cd;
-  }
-  body.dragover {
-    outline: 4px dashed #007bff;
-    outline-offset: -10px;
-    background-color: #f0f8ff;
-  }
-.validation-error {
-  margin-left: 0.5em;
-  display: block;
-  margin-top: -0.2em;
-  margin-bottom: 0.4em;
-}
-</style>
 </head>
 <body>
   <h1>Hyperspace D6 Character Sheet</h1>
-  <div id="user-info"></div>
-<div style="text-align:right; margin: 0.5em 0;">
-  <label for="theme-switch">Theme:</label>
-  <select id="theme-switch" onchange="document.body.className = this.value">
-    <option value="light">Light</option>
-    <option value="dark">Dark</option>
-    <option value="starwars">Star Wars</option>
-  </select>
-</div>
 
-  <form id="character-form" onsubmit="return validateRequiredChoices()" novalidate>
+  <form id="character-form">
     <fieldset>
-      <legend>Character Info</legend>
-      <input type="text" id="char-name" placeholder="Name" required>
-      <select id="char-role"><option value="">Loading roles...</option></select>
-      <select id="char-species"><option value="">Loading species...</option></select>
-      <input type="text" id="char-homeworld" placeholder="Homeworld">
-      <input type="text" id="char-sex" placeholder="Sex">
-      <input type="number" id="char-age" placeholder="Age">
-      <input type="text" id="char-height" placeholder="Height">
-      <input type="text" id="char-weight" placeholder="Weight">
-      <input type="text" id="char-looks" placeholder="Looks">
-      <input type="text" id="char-personality" placeholder="Personality">
-      <input type="text" id="char-quote" placeholder="Quote">
-      <label for="char-burden">Burden:</label>
-      <select id="char-burden"><option value="">Loading burdens...</option></select>
-      <textarea id="char-burden-notes" placeholder="Notes about burden..."></textarea>
-      <label for="char-edge">Edge:</label>
-      <select id="char-edge"><option value="">Loading edges...</option></select>
-      <textarea id="char-edge-notes" placeholder="Notes about edge..."></textarea>
+      <legend>Attributes & Skills</legend>
+      <label>DEX (Dexterity): <input type="number" id="attr-dex" min="1" max="6"></label>
+      <ul>
+        <li><label>Agility: <input type="number" id="skill-agility" min="0" max="6"></label></li>
+        <li><label>Blasters: <input type="number" id="skill-blasters" min="0" max="6"></label></li>
+        <li><label>Melee: <input type="number" id="skill-melee" min="0" max="6"></label></li>
+        <li><label>Steal: <input type="number" id="skill-steal" min="0" max="6"></label></li>
+        <li><label>Throw: <input type="number" id="skill-throw" min="0" max="6"></label></li>
+      </ul>
+      <label>STR (Strength): <input type="number" id="attr-str" min="1" max="6"></label>
+      <ul>
+        <li><label>Athletics: <input type="number" id="skill-athletics" min="0" max="6"></label></li>
+        <li><label>Brawl: <input type="number" id="skill-brawl" min="0" max="6"></label></li>
+        <li><label>Intimidate: <input type="number" id="skill-intimidate" min="0" max="6"></label></li>
+        <li><label>Stamina: <input type="number" id="skill-stamina" min="0" max="6"></label></li>
+        <li><label>Swim: <input type="number" id="skill-swim" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>KNO (Knowledge)</legend>
+      <label>KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
+      <ul>
+        <li><label>Galaxy: <input type="number" id="skill-galaxy" min="0" max="6"></label></li>
+        <li><label>Streetwise: <input type="number" id="skill-streetwise" min="0" max="6"></label></li>
+        <li><label>Survival: <input type="number" id="skill-survival" min="0" max="6"></label></li>
+        <li><label>Willpower: <input type="number" id="skill-willpower" min="0" max="6"></label></li>
+        <li><label>Xenology: <input type="number" id="skill-xenology" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>MEC (Mechanical)</legend>
+      <label>MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
+      <ul>
+        <li><label>Astrogation: <input type="number" id="skill-astrogation" min="0" max="6"></label></li>
+        <li><label>Drive: <input type="number" id="skill-drive" min="0" max="6"></label></li>
+        <li><label>Gunnery: <input type="number" id="skill-gunnery" min="0" max="6"></label></li>
+        <li><label>Pilot: <input type="number" id="skill-pilot" min="0" max="6"></label></li>
+        <li><label>Sensors: <input type="number" id="skill-sensors" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>PER (Perception)</legend>
+      <label>PER: <input type="number" id="attr-per" min="1" max="6"></label>
+      <ul>
+        <li><label>Deceive: <input type="number" id="skill-deceive" min="0" max="6"></label></li>
+        <li><label>Hide: <input type="number" id="skill-hide" min="0" max="6"></label></li>
+        <li><label>Persuade: <input type="number" id="skill-persuade" min="0" max="6"></label></li>
+        <li><label>Search: <input type="number" id="skill-search" min="0" max="6"></label></li>
+        <li><label>Tactics: <input type="number" id="skill-tactics" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>TEC (Technical)</legend>
+      <label>TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
+      <ul>
+        <li><label>Armament: <input type="number" id="skill-armament" min="0" max="6"></label></li>
+        <li><label>Computers: <input type="number" id="skill-computers" min="0" max="6"></label></li>
+        <li><label>Droids: <input type="number" id="skill-droids" min="0" max="6"></label></li>
+        <li><label>Medicine: <input type="number" id="skill-medicine" min="0" max="6"></label></li>
+        <li><label>Vehicles: <input type="number" id="skill-vehicles" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>THE FORCE</legend>
+      <label>THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
+      <ul>
+        <li><label>Alter: <input type="number" id="skill-alter" min="0" max="6"></label></li>
+        <li><label>Control: <input type="number" id="skill-control" min="0" max="6"></label></li>
+        <li><label>Sense: <input type="number" id="skill-sense" min="0" max="6"></label></li>
+      </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Weapons</legend>
+      <select id="weapon-dropdown"></select>
+      <ul id="weapon-list"></ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>Armor</legend>
+      <select id="armor-dropdown"></select>
+      <div id="equipped-armor"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Equipment</legend>
+      <select id="equipment-dropdown"></select>
+      <ul id="equipment-list"></ul>
     </fieldset>
 
     <fieldset>
       <legend>Derived Stats</legend>
-      <input type="number" id="stat-defense" placeholder="Defense" readonly>
-      <input type="number" id="stat-initiative" placeholder="Initiative" readonly>
-      <input type="number" id="stat-resolve" placeholder="Resolve" readonly>
-      <input type="number" id="current-resolve" placeholder="Current Resolve">
-    </fieldset>
-
-    <fieldset>
-      <legend>Attributes & Skills</legend>
-      <section>
-        <h3>DEX (Dexterity)</h3>
-        <input type="text" id="attr-dex" placeholder="DEX">
-        <input type="number" id="skill-agility" placeholder="Agility">
-        <input type="number" id="skill-blasters" placeholder="Blasters">
-        <input type="number" id="skill-melee" placeholder="Melee">
-        <input type="number" id="skill-steal" placeholder="Steal">
-        <input type="number" id="skill-throw" placeholder="Throw">
-      </section>
-
-      <section>
-        <h3>KNO (Knowledge)</h3>
-        <input type="text" id="attr-kno" placeholder="KNO">
-        <input type="number" id="skill-galaxy" placeholder="Galaxy">
-        <input type="number" id="skill-streetwise" placeholder="Streetwise">
-        <input type="number" id="skill-survival" placeholder="Survival">
-        <input type="number" id="skill-willpower" placeholder="Willpower">
-        <input type="number" id="skill-xenology" placeholder="Xenology">
-      </section>
-
-      <section>
-        <h3>MEC (Mechanical)</h3>
-        <input type="text" id="attr-mec" placeholder="MEC">
-        <input type="number" id="skill-astrogation" placeholder="Astrogation">
-        <input type="number" id="skill-drive" placeholder="Drive">
-        <input type="number" id="skill-gunnery" placeholder="Gunnery">
-        <input type="number" id="skill-pilot" placeholder="Pilot">
-        <input type="number" id="skill-sensors" placeholder="Sensors">
-      </section>
-
-      <section>
-        <h3>PER (Perception)</h3>
-        <input type="text" id="attr-per" placeholder="PER">
-        <input type="number" id="skill-deceive" placeholder="Deceive">
-        <input type="number" id="skill-hide" placeholder="Hide">
-        <input type="number" id="skill-persuade" placeholder="Persuade">
-        <input type="number" id="skill-search" placeholder="Search">
-        <input type="number" id="skill-tactics" placeholder="Tactics">
-      </section>
-
-      <section>
-        <h3>STR (Strength)</h3>
-        <input type="text" id="attr-str" placeholder="STR">
-        <input type="number" id="skill-athletics" placeholder="Athletics">
-        <input type="number" id="skill-brawl" placeholder="Brawl">
-        <input type="number" id="skill-intimidate" placeholder="Intimidate">
-        <input type="number" id="skill-stamina" placeholder="Stamina">
-        <input type="number" id="skill-swim" placeholder="Swim">
-      </section>
-
-      <section>
-        <h3>TEC (Technical)</h3>
-        <input type="text" id="attr-tec" placeholder="TEC">
-        <input type="number" id="skill-armament" placeholder="Armament">
-        <input type="number" id="skill-computers" placeholder="Computers">
-        <input type="number" id="skill-droids" placeholder="Droids">
-        <input type="number" id="skill-medicine" placeholder="Medicine">
-        <input type="number" id="skill-vehicles" placeholder="Vehicles">
-      </section>
-
-      <section>
-        <h3>THE FORCE</h3>
-        <input type="text" id="attr-force" placeholder="THE FORCE">
-        <input type="number" id="skill-alter" placeholder="Alter">
-        <input type="number" id="skill-control" placeholder="Control">
-        <input type="number" id="skill-sense" placeholder="Sense">
-      </section>
+      <label>Defense: <input type="number" id="derived-defense" readonly></label>
+      <label>Initiative: <input type="number" id="derived-initiative" readonly></label>
+      <label>Resolve: <input type="number" id="derived-resolve" readonly></label>
+      <label>Current Resolve: <input type="number" id="current-resolve"></label>
     </fieldset>
 
     <fieldset>
@@ -528,362 +120,24 @@ function updateDerivedStats() {
       <label><input type="checkbox" id="status-stunned"> Stunned</label>
       <label><input type="checkbox" id="status-downed"> Downed</label>
     </fieldset>
-
     <fieldset>
-      <legend>Weapons</legend>
-      <select id="weapon-dropdown"><option>Loading...</option></select>
-      <button type="button" onclick="addSelectedWeapon()">Add Weapon</button>
-      <div id="weapon-list"></div>
+      <legend>Data Management</legend>
+      <button type="button" onclick="saveToJSON()">Export to JSON</button>
+      <button type="button" onclick="loadFromJSON()">Import from JSON</button>
+      <button type="button" onclick="saveToCSV()">Export to CSV</button>
+      <input type="file" id="csv-upload" accept=".csv" onchange="loadFromCSV(event)" />
+      <button type="button" onclick="saveToSupabase()">Save to Supabase</button>
     </fieldset>
+  </form>
 
-    <fieldset>
-      <legend>Armor</legend>
-      <select id="armor-dropdown"><option>Loading...</option></select>
-      <button type="button" onclick="setSelectedArmor()">Equip Armor</button>
-      <div id="armor-selected"></div>
-    </fieldset>
-
-    <fieldset>
-      <legend>Equipment</legend>
-      <select id="equipment-dropdown"><option>Loading...</option></select>
-      <button type="button" onclick="addSelectedEquipment()">Add Equipment</button>
-      <div id="equipment-list"></div>
-    </fieldset>
-  <fieldset>
-      <legend>Import/Export</legend>
-      <button type="button" onclick="exportCharacterToJSON()">Export to JSON</button>
-      <button type="button" onclick="exportCharacterToCSV()">Export to CSV</button>
-      <input type="file" id="import-json" accept="application/json" onchange="importCharacterFromJSON(event)">
-    <button type="button" onclick="linkCharacterToSelectedToken()">Link to Selected Token</button>
-</fieldset>
-<div id="token-info" style="margin: 1em 0; font-weight: bold; color: #007bff;">No token selected</div>
-</form>
-
-<details id="gm-panel" style="margin: 2em 0;" open>
-  <summary style="font-weight: bold; font-size: 1.2em;">GM Panel</summary>
-  <div style="margin-top: 1em;">
-    <label>Filter:</label>
-    <button type="button" onclick="filterCharacters('all')">All</button>
-    <button type="button" onclick="filterCharacters('PC')">PCs</button>
-    <button type="button" onclick="filterCharacters('NPC')">NPCs</button>
-    <br><br>
-    <label for="character-list">Character List:</label>
-    <select id="character-list">
-      <option value="">-- Select Character --</option>
-    </select>
-    <br><br>
-    <button type="button" onclick="saveCharacter()">Save Selected</button>
-    <button type="button" onclick="deleteCharacter()">Delete Selected</button>
-    <button type="button" onclick="createNewCharacter()">New Character</button>
-    <button type="button" onclick="createNPC()">Add NPC</button>
-  </div>
-  <hr>
-  <div style="margin-top: 1em;">
-    <h4>Initiative Tracker</h4>
-    <div>
-      <label>Current Round: <span id="current-round">1</span></label>
-      <button type="button" onclick="nextRound()">Next Round</button>
-      <label>Turn: <span id="current-turn">1</span></label>
-      <button type="button" onclick="nextTurn()">Next Turn</button>
-    </div><br>
-    <button onclick="sortByInitiative()" type="button">Sort by Initiative</button>
-    <ul id="initiative-order"></ul>
-    <button type="button" onclick="resetInitiativeTracker()">Reset Tracker</button>
-  </div>
-<hr>
-  <div style="margin-top: 1em;">
-    <h4>Encounters</h4>
-    <label for="encounter-name">Encounter Name:</label>
-    <input type="text" id="encounter-name" placeholder="Enter new encounter name">
-    <button type="button" onclick="createEncounter()">Create Encounter</button>
-    <select id="encounter-list"><option value="">-- Select Encounter --</option></select>
-    <button type="button" onclick="addCharacterToEncounter()">Add Character to Encounter</button>
-  <button type="button" onclick="loadCharactersFromEncounter()">Load Encounter Characters</button>
-  </div>
-</details>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-  // Initialize Supabase (replace with your credentials)
-  const supabase = supabase.createClient(
-    'https://czsplorlrzvanxpwkvru.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
-  );
-async function loadSupabaseItems(tableName, dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  dropdown.innerHTML = '<option>Loading...</option>';
-  const { data, error } = await supabase.from(tableName).select('*').order('name');
-  if (error || !data) {
-    console.error(`Failed to load ${tableName}`, error);
-    dropdown.innerHTML = '<option value="">Error loading</option>';
-    return;
-  }
-  dropdown.innerHTML = '<option value="">-- Select --</option>';
-  data.forEach(item => {
-    const option = document.createElement('option');
-    option.value = item.name;
-    option.textContent = `${item.name} (${item.skill || item.armor_dice || item.cost || ''})`;
-    dropdown.appendChild(option);
+  window.addEventListener('DOMContentLoaded', () => {
+    loadSupabaseItems('weapons', 'weapon-dropdown');
+    loadSupabaseItems('armor', 'armor-dropdown');
+    loadSupabaseItems('equipment', 'equipment-dropdown');
   });
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  loadSupabaseItems('weapons', 'weapon-dropdown');
-  loadSupabaseItems('armor', 'armor-dropdown');
-  loadSupabaseItems('equipment', 'equipment-dropdown');
-  loadEncounters();
-});
 </script>
-<script>
-// Add selected item from dropdown to display list
-function addSelectedWeapon() {
-  const dropdown = document.getElementById('weapon-dropdown');
-  const value = dropdown.value;
-  if (!value) return;
-  const list = document.getElementById('weapon-list');
-  const item = document.createElement('div');
-  item.textContent = value;
-  list.appendChild(item);
-}
-
-function setSelectedArmor() {
-  const dropdown = document.getElementById('armor-dropdown');
-  const value = dropdown.value;
-  const slot = document.getElementById('armor-selected');
-  slot.textContent = value || '';
-}
-
-function addSelectedEquipment() {
-  const dropdown = document.getElementById('equipment-dropdown');
-  const value = dropdown.value;
-  if (!value) return;
-  const list = document.getElementById('equipment-list');
-  const item = document.createElement('div');
-  item.textContent = value;
-  list.appendChild(item);
-}
-function collectItemsFromContainer(containerId) {
-  return Array.from(document.querySelectorAll(`#${containerId} div`)).map(div => div.textContent);
-}
-
-function setupSaveButton() {
-  const saveBtn = document.createElement('button');
-  saveBtn.textContent = 'Save Character';
-  saveBtn.onclick = async () => {
-    const name = document.getElementById('char-name').value;
-    if (!name || !window.currentUserEmail) return alert('Character name and user must be set');
-
-    const data = {
-      name,
-      created_by: window.currentUserEmail,
-      role: document.getElementById('char-role').value,
-      species: document.getElementById('char-species').value,
-      homeworld: document.getElementById('char-homeworld').value,
-      sex: document.getElementById('char-sex').value,
-      age: parseInt(document.getElementById('char-age').value) || null,
-      height: document.getElementById('char-height').value,
-      weight: document.getElementById('char-weight').value,
-      looks: document.getElementById('char-looks').value,
-      personality: document.getElementById('char-personality').value,
-      quote: document.getElementById('char-quote').value,
-      defense: parseFloat(document.getElementById('stat-defense').value),
-      initiative: parseFloat(document.getElementById('stat-initiative').value),
-      resolve: parseFloat(document.getElementById('stat-resolve').value),
-      current_resolve: parseFloat(document.getElementById('current-resolve').value),
-      status: {
-        staggered: document.getElementById('status-staggered').checked,
-        stunned: document.getElementById('status-stunned').checked,
-        downed: document.getElementById('status-downed').checked
-      },
-      edge: document.getElementById('char-edge').value,
-      edge_notes: document.getElementById('char-edge-notes').value,
-      burden: document.getElementById('char-burden').value,
-      burden_notes: document.getElementById('char-burden-notes').value,
-      weapons: collectItemsFromContainer('weapon-list'),
-      armor: document.getElementById('armor-selected').textContent,
-      equipment: collectItemsFromContainer('equipment-list'),
-    };
-
-    const { error } = await supabase.from('characters').upsert(data, { onConflict: ['name', 'created_by'] });
-    if (error) {
-      console.error('Save error:', error);
-      alert('Failed to save character.');
-    } else {
-      alert('Character saved successfully.');
-    }
-  };
-  document.body.appendChild(saveBtn);
-}
-function loadCharacter() {
-  const select = document.getElementById('character-list');
-  if (!select) return;
-  select.onchange = async () => {
-    const name = select.value;
-    if (!name || !window.currentUserEmail) return;
-
-    const { data, error } = await supabase.from('characters').select('*').eq('name', name).eq('created_by', window.currentUserEmail).single();
-    if (error || !data) return alert('Failed to load character');
-
-    // Highlight token if available
-    if (window.owlbear) {
-      const allTokens = window.owlbear.getAllTokens();
-      const token = allTokens.find(t => getAssignedCharacterForToken(t.id) === name);
-      if (token) {
-        window.owlbear.selectToken(token.id);
-      }
-    }
-
-    document.getElementById('char-name').value = data.name;
-    document.getElementById('char-role').value = data.role;
-    document.getElementById('char-species').value = data.species;
-    document.getElementById('char-homeworld').value = data.homeworld;
-    document.getElementById('char-sex').value = data.sex;
-    document.getElementById('char-age').value = data.age;
-    document.getElementById('char-height').value = data.height;
-    document.getElementById('char-weight').value = data.weight;
-    document.getElementById('char-looks').value = data.looks;
-    document.getElementById('char-personality').value = data.personality;
-    document.getElementById('char-quote').value = data.quote;
-
-    document.getElementById('stat-defense').value = data.defense;
-    document.getElementById('stat-initiative').value = data.initiative;
-    document.getElementById('stat-resolve').value = data.resolve;
-    document.getElementById('current-resolve').value = data.current_resolve;
-
-    document.getElementById('status-staggered').checked = data.status?.staggered || false;
-    document.getElementById('status-stunned').checked = data.status?.stunned || false;
-    document.getElementById('status-downed').checked = data.status?.downed || false;
-
-    document.getElementById('weapon-list').innerHTML = '';
-    (data.weapons || []).forEach(w => {
-      const div = document.createElement('div');
-      div.textContent = w;
-      document.getElementById('weapon-list').appendChild(div);
-    });
-
-    document.getElementById('armor-selected').textContent = data.armor || '';
-
-    document.getElementById('equipment-list').innerHTML = '';
-    (data.equipment || []).forEach(e => {
-      const div = document.createElement('div');
-      div.textContent = e;
-      document.getElementById('equipment-list').appendChild(div);
-    });
-  };
-}
-function exportCharacterToJSON() {
-  const fields = document.querySelectorAll('input');
-  const data = {};
-  fields.forEach(input => {
-    data[input.id] = input.type === 'checkbox' ? input.checked : input.value;
-  });
-  data.weapons = collectItemsFromContainer('weapon-list');
-  data.armor = document.getElementById('armor-selected').textContent;
-  data.equipment = collectItemsFromContainer('equipment-list');
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${data['char-name'] || 'character'}.json`;
-  a.click();
-}
-
-function exportCharacterToCSV() {
-  const fields = document.querySelectorAll('input');
-  let csv = 'Field,Value
-';
-  fields.forEach(input => {
-    const value = input.type === 'checkbox' ? input.checked : input.value;
-    csv += `${input.id},${value}
-`;
-  });
-  csv += `weapons,"${collectItemsFromContainer('weapon-list').join(';')}"
-`;
-  csv += `armor,"${document.getElementById('armor-selected').textContent}"
-`;
-  csv += `equipment,"${collectItemsFromContainer('equipment-list').join(';')}"
-`;
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `${document.getElementById('char-name').value || 'character'}.csv`;
-  a.click();
-}
-
-function importCharacterFromJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const data = JSON.parse(e.target.result);
-    for (const key in data) {
-      const el = document.getElementById(key);
-      if (el) {
-        if (el.type === 'checkbox') {
-          el.checked = data[key];
-        } else {
-          el.value = data[key];
-        }
-      }
-    }
-    document.getElementById('weapon-list').innerHTML = '';
-    (data.weapons || []).forEach(w => {
-      const div = document.createElement('div');
-      div.textContent = w;
-      document.getElementById('weapon-list').appendChild(div);
-    });
-    document.getElementById('armor-selected').textContent = data.armor || '';
-    document.getElementById('equipment-list').innerHTML = '';
-    (data.equipment || []).forEach(e => {
-      const div = document.createElement('div');
-      div.textContent = e;
-      document.getElementById('equipment-list').appendChild(div);
-    });
-  };
-  reader.readAsText(file);
-}
-</script>
-function filterCharacters(type) {
-  const dropdown = document.getElementById('character-list');
-  dropdown.innerHTML = '<option value="">-- Loading --</option>';
-  let query = supabase.from('characters').select('*');
-  if (type !== 'all') query = query.eq('role', type);
-  query.then(({ data, error }) => {
-    if (error) return alert('Failed to load characters');
-    dropdown.innerHTML = '<option value="">-- Select Character --</option>';
-    data.forEach(char => {
-      const option = document.createElement('option');
-      option.value = char.name;
-      option.textContent = `${char.name} (${char.role})`;
-      dropdown.appendChild(option);
-    });
-  });
-}
-
-function deleteCharacter() {
-  const name = document.getElementById('character-list').value;
-  if (!name) return alert('Select a character to delete');
-  if (!confirm(`Are you sure you want to delete ${name}?`)) return;
-  supabase.from('characters').delete().eq('name', name).then(({ error }) => {
-    if (error) return alert('Delete failed');
-    alert('Character deleted');
-    filterCharacters('all');
-  });
-}
-
-function createNewCharacter() {
-  document.getElementById('character-form').reset();
-  document.getElementById('weapon-list').innerHTML = '';
-  document.getElementById('armor-selected').textContent = '';
-  document.getElementById('equipment-list').innerHTML = '';
-}
-
-function createNPC() {
-  createNewCharacter();
-  document.getElementById('char-role').value = 'NPC';
-  document.getElementById('char-name').value = 'New NPC';
-}
 <script src="script.js"></script>
-<div id="drop-message" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#007bff;color:white;padding:1em 2em;border-radius:10px;z-index:1000;font-weight:bold;box-shadow:0 0 10px rgba(0,0,0,0.5);">
-    Drop your JSON file to import character
-  </div>
 </body>
 </html>

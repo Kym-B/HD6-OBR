@@ -1,99 +1,118 @@
-
-:root {
-  --bg-color: #f9f9f9;
-  --text-color: #111;
-  --accent-color: #007bff;
-  --section-bg: #ffffff;
-  --border-color: #ccc;
-  --shadow: rgba(0, 0, 0, 0.1);
-}
-
-body.light {
-  --bg-color: #f9f9f9;
-  --text-color: #111;
-  --accent-color: #007bff;
-  --section-bg: #ffffff;
-  --border-color: #ccc;
-  --shadow: rgba(0, 0, 0, 0.1);
-}
-
-body.dark {
-  --bg-color: #1c1c1c;
-  --text-color: #f9f9f9;
-  --accent-color: #00bfff;
-  --section-bg: #2c2c2c;
-  --border-color: #444;
-  --shadow: rgba(255, 255, 255, 0.05);
-}
-
-body.starwars {
-  --bg-color: #000;
-  --text-color: #ffe81f;
-  --accent-color: #ffe81f;
-  --section-bg: #111;
-  --border-color: #222;
-  --shadow: rgba(255, 255, 0, 0.1);
-}
-
+/* General character sheet styling */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  padding: 1em;
-  max-width: 950px;
-  margin: auto;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 1rem;
+  background-color: #f2f2f2;
+  color: #222;
 }
 
-h1 {
-  color: var(--accent-color);
-  text-align: center;
+form {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 1024px;
+  margin: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  gap: 1rem;
 }
 
 fieldset {
-  margin: 1em 0;
-  padding: 1em;
-  background: var(--section-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  box-shadow: 0 2px 6px var(--shadow);
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  background-color: #fff;
 }
 
 legend {
   font-weight: bold;
-  color: var(--accent-color);
+  padding: 0 0.5rem;
 }
 
-input, select, button {
-  margin: 0.3em 0.5em 0.3em 0;
-  padding: 0.4em;
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
 }
 
 button {
-  background-color: var(--accent-color);
-  color: #fff;
-  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #007acc;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 button:hover {
-  filter: brightness(1.1);
+  background-color: #005fa3;
 }
 
-section h3 {
-  margin-top: 1em;
-  color: var(--accent-color);
+ul {
+  list-style-type: none;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
 }
 
-#weapon-list, #equipment-list, #armor-selected {
-  margin-top: 0.5em;
-  padding: 0.5em;
-  background: var(--bg-color);
-  border: 1px dashed var(--accent-color);
-  min-height: 2em;
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
 }
 
-#initiative-order li {
-  margin: 0.25em 0;
+/* Wound status visual indicators */
+#character-form.is-staggered input[type="number"] {
+  border: 2px dashed orange;
+  background-color: #fff3cd;
+}
+
+#character-form.is-stunned,
+#character-form.is-downed {
+  opacity: 0.6;
+}
+
+#character-form.is-downed input,
+#character-form.is-downed select,
+#character-form.is-downed button,
+#character-form.is-stunned input,
+#character-form.is-stunned select,
+#character-form.is-stunned button {
+  pointer-events: none;
+  background-color: #eee;
+}
+
+/* Equipment display */
+#weapon-list,
+#equipment-list {
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: 2rem;
+}
+
+#equipped-armor {
+  background: #e6f2ff;
+  border: 1px solid #a3c4dc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: 2rem;
+  font-weight: bold;
 }
