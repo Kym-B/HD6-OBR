@@ -168,10 +168,7 @@ function applyWoundStatusModifiers() {
     input.classList.remove('staggered');
     if (!isDowned && isStaggered) input.classList.add('staggered');
   });
-    if (!isDowned && isStaggered) input.classList.add('staggered');
-  
-
-  // Optional: add styles for visual feedback
+      // Optional: add styles for visual feedback
   const sheet = document.getElementById('character-form');
   sheet.classList.toggle('is-staggered', isStaggered);
   sheet.classList.toggle('is-stunned', isStunned);
