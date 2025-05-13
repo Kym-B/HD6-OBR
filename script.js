@@ -183,8 +183,6 @@ function endTurn() {
   });
   updateDerivedStats();
 }
-}
-
 function saveToJSON() {
   const formData = new FormData(document.getElementById('character-form'));
   const data = {};
