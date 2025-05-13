@@ -48,6 +48,10 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('attr-str').value ||= 1;
   document.getElementById('attr-dex').value ||= 1;
   document.getElementById('attr-per').value ||= 1;
+  document.getElementById('attr-kno').value ||= 1;
+  document.getElementById('attr-mec').value ||= 1;
+  document.getElementById('attr-tec').value ||= 1;
+  document.getElementById('attr-force').value ||= 1;
 
   const tokenId = new URLSearchParams(window.location.search).get('tokenId');
   if (tokenId) document.body.dataset.tokenId = tokenId;
