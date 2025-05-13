@@ -29,6 +29,7 @@ function loadSupabaseItems(table, dropdownId) {
       
       // Auto-fill attributes if a species is selected
       if (dropdownId === 'char-species') {
+        console.log('[Species selected]', item);
         const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
