@@ -9,6 +9,11 @@ function loadSupabaseItems(table, dropdownId) {
       dropdown.innerHTML = '<option>Error loading</option>';
       return;
     }
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    if (error || !data) {
+      dropdown.innerHTML = '<option>Error loading</option>';
+      return;
+    }
     dropdown.innerHTML = '<option value="">-- Select --</option>';
     data.forEach(item => {
       const option = document.createElement('option');
@@ -22,15 +27,45 @@ function loadSupabaseItems(table, dropdownId) {
       if (!selected) return;
       const item = JSON.parse(selected);
       if (dropdownId === 'armor-dropdown') {
-        document.getElementById('equipped-armor').innerText = `${item.name} (${item.armor_dice || ''}) - ${item.special || ''}`;
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Dice: ${item.armor_dice || ''} | Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-armor">Remove</button>
+        `;
+        li.classList.add('armor-entry');
+        document.getElementById('armor-list').appendChild(li);
+
+        li.querySelector('.remove-armor').addEventListener('click', () => {
+          li.remove();
+        });
       } else if (dropdownId === 'weapon-dropdown') {
         const li = document.createElement('li');
-        li.innerText = `${item.name} (${item.skill || ''}, ${item.damage || ''}) - ${item.special || ''}`;
+        li.innerHTML = `
+          <strong>${item.name}</strong> [${item.category}]<br>
+          Skill: ${item.skill || ''} | Damage: ${item.damage || ''}<br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-weapon">Remove</button>
+        `;
+        li.classList.add('weapon-entry');
         document.getElementById('weapon-list').appendChild(li);
+
+        li.querySelector('.remove-weapon').addEventListener('click', () => {
+          li.remove();
+        });
       } else if (dropdownId === 'equipment-dropdown') {
         const li = document.createElement('li');
-        li.innerText = `${item.name} - ${item.special || ''}`;
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-equipment">Remove</button>
+        `;
+        li.classList.add('equipment-entry');
         document.getElementById('equipment-list').appendChild(li);
+
+        li.querySelector('.remove-equipment').addEventListener('click', () => {
+          li.remove();
+        });
       }
     });
   });
@@ -39,9 +74,17 @@ let supabase;
 
 function toggleTheme() {
   const body = document.body;
-  body.classList.toggle('dark');
-  body.classList.toggle('light');
+  const btn = document.querySelector('.theme-toggle');
+  const isDark = body.classList.toggle('dark');
+  body.classList.toggle('light', !isDark);
+  if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('.theme-toggle');
+  const isDark = document.body.classList.contains('dark');
+  if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+});
 
 window.addEventListener('DOMContentLoaded', () => {
   // Set default values for attributes that must not drop below 1
