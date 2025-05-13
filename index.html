@@ -23,7 +23,7 @@
         <li><label>Steal: <input type="number" id="skill-steal" min="0" max="6"></label></li>
         <li><label>Throw: <input type="number" id="skill-throw" min="0" max="6"></label></li>
       </ul>
-      <label>STR (Strength): <input type="number" id="attr-str" min="1" max="6"></label>
+      <label>STR (Strength): <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
         <li><label>Athletics: <input type="number" id="skill-athletics" min="0" max="6"></label></li>
         <li><label>Brawl: <input type="number" id="skill-brawl" min="0" max="6"></label></li>
@@ -59,7 +59,7 @@
 
     <fieldset>
       <legend>PER (Perception)</legend>
-      <label>PER: <input type="number" id="attr-per" min="1" max="6"></label>
+      <label>PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
         <li><label>Deceive: <input type="number" id="skill-deceive" min="0" max="6"></label></li>
         <li><label>Hide: <input type="number" id="skill-hide" min="0" max="6"></label></li>
