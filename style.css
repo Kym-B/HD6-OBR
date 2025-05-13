@@ -38,6 +38,14 @@ form {
   max-width: 1024px;
   margin: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  gap: 1rem;
+}
+
+body.dark form {
+  background-color: #262626;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+}
 
   display: grid;
   gap: 1rem;
@@ -59,6 +67,7 @@ body.dark fieldset {
 legend {
   font-weight: bold;
   padding: 0 0.5rem;
+  color: inherit;
 }
 
 label {
@@ -71,12 +80,21 @@ input[type="text"],
 select,
 textarea {
   background-color: #f2f2f2;
-
   padding: 0.25rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.9rem;
   margin-left: 0.5rem;
+}
+
+body.dark input[type="number"],
+body.dark input[type="text"],
+body.dark select,
+body.dark textarea {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #555;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
 }
 
 input[type="checkbox"] {
