@@ -26,6 +26,17 @@ function loadSupabaseItems(table, dropdownId) {
       const selected = dropdown.value;
       if (!selected) return;
       const item = JSON.parse(selected);
+      
+      // Auto-fill attributes if a species is selected
+      if (dropdownId === 'char-species') {
+        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec'];
+        attrFields.forEach(attr => {
+          const el = document.getElementById(`attr-${attr}`);
+          if (el && item[attr] !== undefined) el.value = item[attr];
+        });
+        updateDerivedStats();
+      }
+
       if (dropdownId === 'armor-dropdown') {
         const li = document.createElement('li');
         li.innerHTML = `
