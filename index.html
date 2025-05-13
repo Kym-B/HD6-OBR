@@ -151,6 +151,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   window.addEventListener('DOMContentLoaded', () => {
+    loadSupabaseItems('roles', 'char-role');
+    loadSupabaseItems('species', 'char-species');
     loadSupabaseItems('weapons', 'weapon-dropdown');
     loadSupabaseItems('armor', 'armor-dropdown');
     loadSupabaseItems('equipment', 'equipment-dropdown');
