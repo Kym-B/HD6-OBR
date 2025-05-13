@@ -96,14 +96,7 @@ function toggleTheme() {
   if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const btn = document.querySelector('.theme-toggle');
-  const isDark = document.body.classList.contains('dark');
-  if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-});
 
-  });
-}
 
 window.addEventListener('DOMContentLoaded', () => {
     const tokenId = new URLSearchParams(window.location.search).get('tokenId');
