@@ -32,7 +32,10 @@ function loadSupabaseItems(table, dropdownId) {
         const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
-          if (el && item[attr] !== undefined) el.value = item[attr];
+          if (el && item[attr] !== undefined) {
+            el.value = item[attr];
+            updateTotalDice(attr); // Refresh dependent displays
+          }
         });
         updateDerivedStats();
       }
