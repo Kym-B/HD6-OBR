@@ -144,14 +144,21 @@ function rollDiceWithDestiny(skillId) {
 
 function updateDerivedStats() {
   applyWoundStatusModifiers();
+
   const str = parseInt(document.getElementById('attr-str').value || 0);
+  const dex = parseInt(document.getElementById('attr-dex').value || 0);
   const per = parseInt(document.getElementById('attr-per').value || 0);
-  document.getElementById('derived-defense').value = str + 6;
-  document.getElementById('derived-initiative').value = per + 6;
-  const resolve = str + 6;
+
+  const agility = parseInt(document.getElementById('skill-agility').value || 0);
+  const tactics = parseInt(document.getElementById('skill-tactics').value || 0);
+  const stamina = parseInt(document.getElementById('skill-stamina').value || 0);
+
+  document.getElementById('derived-defense').value = dex + agility + 6;
+  document.getElementById('derived-initiative').value = per + tactics + 6;
+  const resolve = str + stamina + 6;
   document.getElementById('derived-resolve').value = resolve;
+
   const current = document.getElementById('current-resolve');
-  if (!current.value) current.value = resolve;
 }
 
 function applyWoundStatusModifiers() {
