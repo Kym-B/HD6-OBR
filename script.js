@@ -185,17 +185,7 @@ function endTurn() {
     if (el) el.checked = false;
   });
   updateDerivedStats();
-});
-
-  const formElements = document.querySelectorAll('#character-form input, #character-form select, #character-form button');
-  formElements.forEach(el => {
-    if (isDowned || isStunned) el.disabled = true;
-    else if (!el.classList.contains('readonly')) el.disabled = false;
-  });
-
-  if (isDowned) {
-    document.getElementById('current-resolve').disabled = false;
-  }
+}
 }
 
 function saveToJSON() {
