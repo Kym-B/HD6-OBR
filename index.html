@@ -15,6 +15,10 @@
   <form id="character-form">
     <fieldset>
       <legend>Attributes & Skills</legend>
+      
+       <fieldset>
+      <legend>DEX (Dexterity)</legend>
+      
       <label>DEX (Dexterity): <input type="number" id="attr-dex" min="1" max="6"></label>
       <ul>
         <li><label>Agility: <input type="number" id="skill-agility" min="0" max="6"></label></li>
@@ -23,7 +27,9 @@
         <li><label>Steal: <input type="number" id="skill-steal" min="0" max="6"></label></li>
         <li><label>Throw: <input type="number" id="skill-throw" min="0" max="6"></label></li>
       </ul>
-      <label>STR (Strength): <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
+          </fieldset>
+     <fieldset>
+      <label>STR (Strength) <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
         <li><label>Athletics: <input type="number" id="skill-athletics" min="0" max="6"></label></li>
         <li><label>Brawl: <input type="number" id="skill-brawl" min="0" max="6"></label></li>
@@ -90,6 +96,7 @@
         <li><label>Sense: <input type="number" id="skill-sense" min="0" max="6"></label></li>
       </ul>
     </fieldset>
+       </fieldset>
 
     <fieldset>
       <legend>Weapons</legend>
