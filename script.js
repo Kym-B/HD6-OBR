@@ -44,6 +44,11 @@ function toggleTheme() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  // Set default values for attributes that must not drop below 1
+  document.getElementById('attr-str').value ||= 1;
+  document.getElementById('attr-dex').value ||= 1;
+  document.getElementById('attr-per').value ||= 1;
+
   const tokenId = new URLSearchParams(window.location.search).get('tokenId');
   if (tokenId) document.body.dataset.tokenId = tokenId;
   supabase = window.supabase.createClient(
