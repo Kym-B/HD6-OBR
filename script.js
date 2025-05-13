@@ -155,7 +155,6 @@ function updateDerivedStats() {
   if (current && (!current.value || isNaN(parseInt(current.value)))) {
     current.value = res;
   }
-  }
 }
 
 function applyWoundStatusModifiers() {
