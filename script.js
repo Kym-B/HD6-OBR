@@ -95,7 +95,6 @@ function saveToSupabase() {
   });
 }
 
-
 const attrMap = {
   agility: 'dex', blasters: 'dex', melee: 'dex', steal: 'dex', throw: 'dex',
   galaxy: 'kno', streetwise: 'kno', survival: 'kno', willpower: 'kno', xenology: 'kno',
@@ -173,14 +172,12 @@ function applyWoundStatusModifiers() {
     input.classList.remove('staggered');
     if (!isDowned && isStaggered) input.classList.add('staggered');
   });
-      // Optional: add styles for visual feedback
   const sheet = document.getElementById('character-form');
   sheet.classList.toggle('is-staggered', isStaggered);
   sheet.classList.toggle('is-stunned', isStunned);
   sheet.classList.toggle('is-downed', isDowned);
 }
 
-// Auto-clear statuses at end of turn (placeholder example)
 function endTurn() {
   ['status-staggered', 'status-stunned'].forEach(id => {
     const el = document.getElementById(id);
@@ -188,6 +185,7 @@ function endTurn() {
   });
   updateDerivedStats();
 }
+
 function saveToJSON() {
   const formData = new FormData(document.getElementById('character-form'));
   const data = {};
