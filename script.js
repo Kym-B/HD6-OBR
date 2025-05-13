@@ -159,6 +159,9 @@ function updateDerivedStats() {
   document.getElementById('derived-resolve').value = resolve;
 
   const current = document.getElementById('current-resolve');
+  if (!current.value || isNaN(parseInt(current.value))) {
+    current.value = resolve;
+  }
 }
 
 function applyWoundStatusModifiers() {
