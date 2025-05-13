@@ -132,22 +132,29 @@ function rollDiceWithDestiny(skillId) {
 function updateDerivedStats() {
   applyWoundStatusModifiers();
 
-  const str = parseInt(document.getElementById('attr-str').value || 0);
-  const dex = parseInt(document.getElementById('attr-dex').value || 0);
-  const per = parseInt(document.getElementById('attr-per').value || 0);
+  const str = parseInt(document.getElementById('attr-str')?.value || 1);
+  const dex = parseInt(document.getElementById('attr-dex')?.value || 1);
+  const per = parseInt(document.getElementById('attr-per')?.value || 1);
 
-  const agility = parseInt(document.getElementById('skill-agility').value || 0);
-  const tactics = parseInt(document.getElementById('skill-tactics').value || 0);
-  const stamina = parseInt(document.getElementById('skill-stamina').value || 0);
+  const agility = parseInt(document.getElementById('skill-agility')?.value || 0);
+  const tactics = parseInt(document.getElementById('skill-tactics')?.value || 0);
+  const stamina = parseInt(document.getElementById('skill-stamina')?.value || 0);
 
-  document.getElementById('derived-defense').value = dex + agility + 6;
-  document.getElementById('derived-initiative').value = per + tactics + 6;
-  const resolve = str + stamina + 6;
-  document.getElementById('derived-resolve').value = resolve;
+  const def = dex + agility + 6;
+  const init = per + tactics + 6;
+  const res = str + stamina + 6;
 
+  const defEl = document.getElementById('derived-defense');
+  const initEl = document.getElementById('derived-initiative');
+  const resEl = document.getElementById('derived-resolve');
   const current = document.getElementById('current-resolve');
-  if (!current.value || isNaN(parseInt(current.value))) {
-    current.value = resolve;
+
+  if (defEl) defEl.value = def;
+  if (initEl) initEl.value = init;
+  if (resEl) resEl.value = res;
+  if (current && (!current.value || isNaN(parseInt(current.value)))) {
+    current.value = res;
+  }
   }
 }
 
