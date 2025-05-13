@@ -33,7 +33,7 @@ function loadSupabaseItems(table, dropdownId) {
         const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
-          const dbValue = item[attr.toUpperCase()];
+          const dbValue = item[attr];
           if (el && dbValue !== undefined) {
             el.value = dbValue;
             updateTotalDice(attr);
