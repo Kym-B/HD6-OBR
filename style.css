@@ -50,6 +50,12 @@ fieldset {
   background-color: #fff;
 }
 
+body.dark fieldset {
+  background-color: #2a2a2a;
+  border-color: #444;
+}
+}
+
 legend {
   font-weight: bold;
   padding: 0 0.5rem;
@@ -180,4 +186,11 @@ body.dark #equipment-list {
   margin-top: 0.5rem;
   min-height: 2rem;
   font-weight: bold;
+}
+
+body.dark #armor-list,
+body.dark #equipped-armor {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #e0e0e0;
 }
