@@ -34,19 +34,6 @@ function loadSupabaseItems(table, dropdownId) {
       }
     });
   });
-}) => {
-    if (error || !data) {
-      dropdown.innerHTML = '<option>Error loading</option>';
-      return;
-    }
-    dropdown.innerHTML = '';
-    data.forEach(item => {
-      const option = document.createElement('option');
-      option.value = item.name || item.id;
-      option.textContent = item.name;
-      dropdown.appendChild(option);
-    });
-  });
 }
 let supabase;
 
@@ -174,20 +161,7 @@ function applyWoundStatusModifiers() {
     input.disabled = isDowned || isStunned;
     input.classList.remove('staggered');
     if (!isDowned && isStaggered) input.classList.add('staggered');
-  });
-
-  const formElements = document.querySelectorAll('#character-form input, #character-form select, #character-form button');
-  formElements.forEach(el => {
-    if (isDowned || isStunned) {
-      el.disabled = true;
-    } else {
-      if (!el.classList.contains('readonly')) el.disabled = false;
-    }
-  });
-
-  if (isDowned) {
-    document.getElementById('current-resolve').disabled = false;
-  }
+  
 
   // Optional: add styles for visual feedback
   const sheet = document.getElementById('character-form');
