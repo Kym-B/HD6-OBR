@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8" />
   <title>Hyperspace D6 Character Sheet</title>
   <link rel="stylesheet" href="style.css" />
@@ -602,6 +603,11 @@ function updateDerivedStats() {
 </details>
 
   <script>
+  // Initialize Supabase (replace with your credentials)
+  const supabase = supabase.createClient(
+    'https://czsplorlrzvanxpwkvru.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
+  );
 async function loadSupabaseItems(tableName, dropdownId) {
   const dropdown = document.getElementById(dropdownId);
   dropdown.innerHTML = '<option>Loading...</option>';
