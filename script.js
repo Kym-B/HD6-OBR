@@ -161,6 +161,8 @@ function applyWoundStatusModifiers() {
     input.disabled = isDowned || isStunned;
     input.classList.remove('staggered');
     if (!isDowned && isStaggered) input.classList.add('staggered');
+  });
+    if (!isDowned && isStaggered) input.classList.add('staggered');
   
 
   // Optional: add styles for visual feedback
