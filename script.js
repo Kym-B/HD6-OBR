@@ -31,7 +31,7 @@ function loadSupabaseItems(table, dropdownId) {
       if (dropdownId === 'char-species') {
         console.log('[Species selected]', item);
         alert('Species keys: ' + Object.keys(item).join(', '));
-        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec'];
+        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
           const dbValue = item[attr];
