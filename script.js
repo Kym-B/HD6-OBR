@@ -20,23 +20,33 @@ function loadSupabaseItems(table, dropdownId) {
       dropdown.appendChild(option);
     });
 
-    dropdown.addEventListener('change', () => {
-      const selected = dropdown.value;
-      if (!selected) return;
-      const item = JSON.parse(selected);
+    const speciesAttrs = {};
+const roleAttrs = {};
+const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
 
-      if (dropdownId === 'char-species') {
-        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
+function updateAttributeDisplay() {
+  attrFields.forEach(attr => {
+    const el = document.getElementById(`attr-${attr}`);
+    if (el) el.value = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
+  });
+  updateDerivedStats();
+}
+
+dropdown.addEventListener('change', () => {
+  const selected = dropdown.value;
+  if (!selected) return;
+  const item = JSON.parse(selected);
+
+  if (dropdownId === 'char-species') {
         attrFields.forEach(attr => {
-          const el = document.getElementById(`attr-${attr}`);
-          if (el && item[attr] !== undefined) {
-            el.value = item[attr];
-          }
-        });
-        updateDerivedStats();
+        speciesAttrs[attr] = parseInt(item[attr] || 0);
+      });
+      updateAttributeDisplay();
       } else if (dropdownId === 'char-role') {
-        // Role selected — apply role-specific updates if needed
-        updateDerivedStats();
+        attrFields.forEach(attr => {
+          roleAttrs[attr] = parseInt(item[attr] || 0);
+        });
+        updateAttributeDisplay();
       } else if (dropdownId === 'armor-dropdown') {
         const li = document.createElement('li');
         li.innerHTML = `
