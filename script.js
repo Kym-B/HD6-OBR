@@ -14,14 +14,15 @@ function updateAttributeDisplay() {
 
 
     data.sort((a, b) => a.name.localeCompare(b.name));
-    data.forEach(item => {
-      const option = document.createElement('option');
-      option.value = JSON.stringify(item);
-      option.textContent = item.name;
-      dropdown.appendChild(option);
-    });
+      dropdown.innerHTML = '<option value="">-- Select --</option>';
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(item);
+        option.textContent = item.name;
+        dropdown.appendChild(option);
+      });
 
-    dropdown.addEventListener('change', () => {
+      dropdown.addEventListener('change', () => {
   const selected = dropdown.value;
   if (!selected) return;
   const item = JSON.parse(selected);
