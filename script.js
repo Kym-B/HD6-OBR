@@ -39,15 +39,17 @@ function loadSupabaseItems(table, dropdownId) {
 
   if (dropdownId === 'char-species') {
         attrFields.forEach(attr => {
-        if (item[attr] !== undefined) {
-          speciesAttrs[attr] = parseInt(item[attr]);
+        const value = parseInt(item[attr]);
+        if (!isNaN(value)) {
+          speciesAttrs[attr] = value;
         }
       });
       updateAttributeDisplay();
       } else if (dropdownId === 'char-role') {
         attrFields.forEach(attr => {
-          if (item[attr] !== undefined) {
-          roleAttrs[attr] = parseInt(item[attr]);
+          const value = parseInt(item[attr]);
+        if (!isNaN(value)) {
+          roleAttrs[attr] = value;
         }
         });
         updateAttributeDisplay();
