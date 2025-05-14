@@ -113,6 +113,7 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 
   // all supabase-dependent calls now run AFTER initialization
+  // all supabase-dependent calls now run AFTER initialization
   loadSupabaseItems('roles', 'char-role');
   setupLockableField('char-role');
   loadSupabaseItems('species', 'char-species');
