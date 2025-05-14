@@ -12,18 +12,6 @@ function updateAttributeDisplay() {
   updateDerivedStats();
 }
 
-// moved inside DOMContentLoaded to ensure supabase is initialized
-function loadSupabaseItems(table, dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  if (!dropdown) return;
-
-  dropdown.innerHTML = '<option value="">-- Select --</option>';
-
-  supabase.from(table).select('*').then(({ data, error }) => {
-    if (error || !data) {
-      dropdown.innerHTML = '<option>Error loading</option>';
-      return;
-    }
 
     data.sort((a, b) => a.name.localeCompare(b.name));
     data.forEach(item => {
@@ -111,6 +99,86 @@ window.addEventListener('DOMContentLoaded', () => {
     'https://czsplorlrzvanxpwkvru.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
   );
+
+  function loadSupabaseItems(table, dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    if (!dropdown) return;
+
+    dropdown.innerHTML = '<option value="">-- Select --</option>';
+
+    supabase.from(table).select('*').then(({ data, error }) => {
+      if (error || !data) {
+        dropdown.innerHTML = '<option>Error loading</option>';
+        return;
+      }
+
+      data.sort((a, b) => a.name.localeCompare(b.name));
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(item);
+        option.textContent = item.name;
+        dropdown.appendChild(option);
+      });
+
+      dropdown.addEventListener('change', () => {
+        const selected = dropdown.value;
+        if (!selected) return;
+        const item = JSON.parse(selected);
+
+        if (dropdownId === 'char-species') {
+          attrFields.forEach(attr => {
+            const value = parseInt(item[attr]);
+            if (!isNaN(value)) {
+              speciesAttrs[attr] = value;
+            }
+          });
+          updateAttributeDisplay();
+        } else if (dropdownId === 'char-role') {
+          attrFields.forEach(attr => {
+            const value = parseInt(item[attr]);
+            if (!isNaN(value)) {
+              roleAttrs[attr] = value;
+            }
+          });
+          updateAttributeDisplay();
+        } else if (dropdownId === 'armor-dropdown') {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>${item.name}</strong><br>
+            Dice: ${item.armor_dice || ''} | Cost: ${item.cost || ''} | Special: ${item.special || ''}
+            <button type="button" class="remove-armor">Remove</button>
+          `;
+          li.classList.add('armor-entry');
+          const armorList = document.getElementById('armor-list');
+          if (armorList) armorList.appendChild(li);
+          li.querySelector('.remove-armor').addEventListener('click', () => li.remove());
+        } else if (dropdownId === 'weapon-dropdown') {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>${item.name}</strong> [${item.category}]<br>
+            Skill: ${item.skill || ''} | Damage: ${item.damage || ''}<br>
+            Cost: ${item.cost || ''} | Special: ${item.special || ''}
+            <button type="button" class="remove-weapon">Remove</button>
+          `;
+          li.classList.add('weapon-entry');
+          const weaponList = document.getElementById('weapon-list');
+          if (weaponList) weaponList.appendChild(li);
+          li.querySelector('.remove-weapon').addEventListener('click', () => li.remove());
+        } else if (dropdownId === 'equipment-dropdown') {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <strong>${item.name}</strong><br>
+            Cost: ${item.cost || ''} | Special: ${item.special || ''}
+            <button type="button" class="remove-equipment">Remove</button>
+          `;
+          li.classList.add('equipment-entry');
+          const equipmentList = document.getElementById('equipment-list');
+          if (equipmentList) equipmentList.appendChild(li);
+          li.querySelector('.remove-equipment').addEventListener('click', () => li.remove());
+        }
+      });
+    });
+  }
 
   // all supabase-dependent calls now run AFTER initialization
   if (!window.supabase) {
