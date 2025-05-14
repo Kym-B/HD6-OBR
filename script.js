@@ -1,5 +1,28 @@
 // Supabase setup and Owlbear token sync integration
 
+function loadSupabaseItems(table, dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  dropdown.innerHTML = '<option value="">-- Select --</option>';
+
+  supabase.from(table).select('*').then(({ data, error }) => {
+    if (error || !data) {
+      dropdown.innerHTML = '<option>Error loading</option>';
+      return;
+    }
+
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    data.forEach(item => {
+      const option = document.createElement('option');
+      option.value = JSON.stringify(item);
+      option.textContent = item.name;
+      dropdown.appendChild(option);
+    });
+  });
+}
+
+
 window.addEventListener('DOMContentLoaded', () => {
   const tokenId = new URLSearchParams(window.location.search).get('tokenId');
   if (tokenId) document.body.dataset.tokenId = tokenId;
