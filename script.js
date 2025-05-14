@@ -10,11 +10,61 @@ function loadSupabaseItems(table, dropdownId) {
       return;
     }
     data.sort((a, b) => a.name.localeCompare(b.name));
-    if (error || !data) {
-      dropdown.innerHTML = '<option>Error loading</option>';
-      return;
-    }
     dropdown.innerHTML = '<option value="">-- Select --</option>';
+    data.forEach(item => {
+      const option = document.createElement('option');
+      option.value = JSON.stringify(item);
+      option.textContent = item.name;
+      dropdown.appendChild(option);
+    });
+
+    dropdown.addEventListener('change', () => {
+      const selected = dropdown.value;
+      if (!selected) return;
+      const item = JSON.parse(selected);
+
+      if (dropdownId === 'char-species' || dropdownId === 'char-role') {
+        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
+        attrFields.forEach(attr => {
+          const el = document.getElementById(`attr-${attr}`);
+          if (el && item[attr] !== undefined) {
+            el.value = item[attr];
+          }
+        });
+        updateDerivedStats();
+      } else if (dropdownId === 'armor-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Dice: ${item.armor_dice || ''} | Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-armor">Remove</button>
+        `;
+        li.classList.add('armor-entry');
+        document.getElementById('armor-list').appendChild(li);
+        li.querySelector('.remove-armor').addEventListener('click', () => li.remove());
+      } else if (dropdownId === 'weapon-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong> [${item.category}]<br>
+          Skill: ${item.skill || ''} | Damage: ${item.damage || ''}<br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-weapon">Remove</button>
+        `;
+        li.classList.add('weapon-entry');
+        document.getElementById('weapon-list').appendChild(li);
+        li.querySelector('.remove-weapon').addEventListener('click', () => li.remove());
+      } else if (dropdownId === 'equipment-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-equipment">Remove</button>
+        `;
+        li.classList.add('equipment-entry');
+        document.getElementById('equipment-list').appendChild(li);
+        li.querySelector('.remove-equipment').addEventListener('click', () => li.remove());
+      }
+    });
     data.forEach(item => {
       const option = document.createElement('option');
       option.value = JSON.stringify(item);
