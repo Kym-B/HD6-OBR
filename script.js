@@ -113,10 +113,6 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 
   // all supabase-dependent calls now run AFTER initialization
-  // all supabase-dependent calls now run AFTER initialization
-  // all supabase-dependent calls now run AFTER initialization
-  // all supabase-dependent calls now run AFTER initialization
-  // all supabase-dependent calls now run AFTER initialization
   if (!window.supabase) {
     console.error('Supabase not initialized. Aborting data load.');
     return;
