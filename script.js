@@ -11,9 +11,6 @@ function updateAttributeDisplay() {
   });
   updateDerivedStats();
 }
-
-
-    data.sort((a, b) => a.name.localeCompare(b.name));
       dropdown.innerHTML = '<option value="">-- Select --</option>';
       data.forEach(item => {
         const option = document.createElement('option');
