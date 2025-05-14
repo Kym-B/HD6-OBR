@@ -25,7 +25,7 @@ function loadSupabaseItems(table, dropdownId) {
       if (!selected) return;
       const item = JSON.parse(selected);
 
-      if (dropdownId === 'char-species' || dropdownId === 'char-role') {
+      if (dropdownId === 'char-species') {
         const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
@@ -33,6 +33,9 @@ function loadSupabaseItems(table, dropdownId) {
             el.value = item[attr];
           }
         });
+        updateDerivedStats();
+      } else if (dropdownId === 'char-role') {
+        // Role selected — apply role-specific updates if needed
         updateDerivedStats();
       } else if (dropdownId === 'armor-dropdown') {
         const li = document.createElement('li');
