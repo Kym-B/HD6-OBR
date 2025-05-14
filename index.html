@@ -32,76 +32,76 @@
       
        <fieldset style="min-width: 280px;"><legend>DEX (Dexterity)</legend>
       
-      <label>DEX (Dexterity): <input type="number" id="attr-dex" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <label data-tooltip-key="dex">DEX (Dexterity): <input type="number" id="attr-dex" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
-        <li><label>Agility: <input type="number" id="skill-agility" min="0" max="6" oninput="updateTotalDice('agility')"></label></li>
-        <li><label>Blasters: <input type="number" id="skill-blasters" min="0" max="6" oninput="updateTotalDice('blasters')"></label></li>
-        <li><label>Melee: <input type="number" id="skill-melee" min="0" max="6" oninput="updateTotalDice('melee')"></label></li>
-        <li><label>Steal: <input type="number" id="skill-steal" min="0" max="6" oninput="updateTotalDice('steal')"></label></li>
-        <li><label>Throw: <input type="number" id="skill-throw" min="0" max="6" oninput="updateTotalDice('throw')"></label></li>
+        <li><label data-tooltip-key="agility">Agility: <input type="number" id="skill-agility" min="0" max="6" oninput="updateTotalDice('agility')"></label></li>
+        <li><label data-tooltip-key="blasters">Blasters: <input type="number" id="skill-blasters" min="0" max="6" oninput="updateTotalDice('blasters')"></label></li>
+        <li><label data-tooltip-key="melee">Melee: <input type="number" id="skill-melee" min="0" max="6" oninput="updateTotalDice('melee')"></label></li>
+        <li><label data-tooltip-key="steal">Steal: <input type="number" id="skill-steal" min="0" max="6" oninput="updateTotalDice('steal')"></label></li>
+        <li><label data-tooltip-key="throw">Throw: <input type="number" id="skill-throw" min="0" max="6" oninput="updateTotalDice('throw')"></label></li>
       </ul>
           </fieldset>
      <fieldset style="min-width: 280px;"><legend>STR (Strength)</legend>
-      <label>STR (Strength): <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <label data-tooltip-key="str">STR (Strength): <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
-        <li><label>Athletics: <input type="number" id="skill-athletics" min="0" max="6" oninput="updateTotalDice('athletics')"></label></li>
-        <li><label>Brawl: <input type="number" id="skill-brawl" min="0" max="6" oninput="updateTotalDice('brawl')"></label></li>
-        <li><label>Intimidate: <input type="number" id="skill-intimidate" min="0" max="6" oninput="updateTotalDice('intimidate')"></label></li>
-        <li><label>Stamina: <input type="number" id="skill-stamina" min="0" max="6" oninput="updateTotalDice('stamina')"></label></li>
-        <li><label>Swim: <input type="number" id="skill-swim" min="0" max="6" oninput="updateTotalDice('swim')"></label></li>
+        <li><label data-tooltip-key="athletics">Athletics: <input type="number" id="skill-athletics" min="0" max="6" oninput="updateTotalDice('athletics')"></label></li>
+        <li><label data-tooltip-key="brawl">Brawl: <input type="number" id="skill-brawl" min="0" max="6" oninput="updateTotalDice('brawl')"></label></li>
+        <li><label data-tooltip-key="intimidate">Intimidate: <input type="number" id="skill-intimidate" min="0" max="6" oninput="updateTotalDice('intimidate')"></label></li>
+        <li><label data-tooltip-key="stamina">Stamina: <input type="number" id="skill-stamina" min="0" max="6" oninput="updateTotalDice('stamina')"></label></li>
+        <li><label data-tooltip-key="swim">Swim: <input type="number" id="skill-swim" min="0" max="6" oninput="updateTotalDice('swim')"></label></li>
       </ul>
     </fieldset>
 
     <fieldset style="min-width: 280px;"><legend>KNO (Knowledge)</legend>
-      <label>KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
+      <label data-tooltip-key="kno">KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
       <ul>
-        <li><label>Galaxy: <input type="number" id="skill-galaxy" min="0" max="6" oninput="updateTotalDice('galaxy')"></label></li>
-        <li><label>Streetwise: <input type="number" id="skill-streetwise" min="0" max="6" oninput="updateTotalDice('streetwise')"></label></li>
-        <li><label>Survival: <input type="number" id="skill-survival" min="0" max="6" oninput="updateTotalDice('survival')"></label></li>
-        <li><label>Willpower: <input type="number" id="skill-willpower" min="0" max="6" oninput="updateTotalDice('willpower')"></label></li>
-        <li><label>Xenology: <input type="number" id="skill-xenology" min="0" max="6" oninput="updateTotalDice('xenology')"></label></li>
+        <li><label data-tooltip-key="galaxy">Galaxy: <input type="number" id="skill-galaxy" min="0" max="6" oninput="updateTotalDice('galaxy')"></label></li>
+        <li><label data-tooltip-key="streetwise">Streetwise: <input type="number" id="skill-streetwise" min="0" max="6" oninput="updateTotalDice('streetwise')"></label></li>
+        <li><label data-tooltip-key="survival">Survival: <input type="number" id="skill-survival" min="0" max="6" oninput="updateTotalDice('survival')"></label></li>
+        <li><label data-tooltip-key="willpower">Willpower: <input type="number" id="skill-willpower" min="0" max="6" oninput="updateTotalDice('willpower')"></label></li>
+        <li><label data-tooltip-key="xenology">Xenology: <input type="number" id="skill-xenology" min="0" max="6" oninput="updateTotalDice('xenology')"></label></li>
       </ul>
     </fieldset>
 
     <fieldset style="min-width: 280px;"><legend>MEC (Mechanical)</legend>
-      <label>MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
+      <label data-tooltip-key="mec">MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
       <ul>
-        <li><label>Astrogation: <input type="number" id="skill-astrogation" min="0" max="6" oninput="updateTotalDice('astrogation')"></label></li>
-        <li><label>Drive: <input type="number" id="skill-drive" min="0" max="6" oninput="updateTotalDice('drive')"></label></li>
-        <li><label>Gunnery: <input type="number" id="skill-gunnery" min="0" max="6" oninput="updateTotalDice('gunnery')"></label></li>
-        <li><label>Pilot: <input type="number" id="skill-pilot" min="0" max="6" oninput="updateTotalDice('pilot')"></label></li>
-        <li><label>Sensors: <input type="number" id="skill-sensors" min="0" max="6" oninput="updateTotalDice('sensors')"></label></li>
+        <li><label data-tooltip-key="astrogation">Astrogation: <input type="number" id="skill-astrogation" min="0" max="6" oninput="updateTotalDice('astrogation')"></label></li>
+        <li><label data-tooltip-key="drive">Drive: <input type="number" id="skill-drive" min="0" max="6" oninput="updateTotalDice('drive')"></label></li>
+        <li><label data-tooltip-key="gunnery">Gunnery: <input type="number" id="skill-gunnery" min="0" max="6" oninput="updateTotalDice('gunnery')"></label></li>
+        <li><label data-tooltip-key="pilot">Pilot: <input type="number" id="skill-pilot" min="0" max="6" oninput="updateTotalDice('pilot')"></label></li>
+        <li><label data-tooltip-key="sensors">Sensors: <input type="number" id="skill-sensors" min="0" max="6" oninput="updateTotalDice('sensors')"></label></li>
       </ul>
     </fieldset>
 
     <fieldset style="min-width: 280px;"><legend>PER (Perception)</legend>
-      <label>PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <label data-tooltip-key="per">PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
       <ul>
-        <li><label>Deceive: <input type="number" id="skill-deceive" min="0" max="6" oninput="updateTotalDice('deceive')"></label></li>
-        <li><label>Hide: <input type="number" id="skill-hide" min="0" max="6" oninput="updateTotalDice('hide')"></label></li>
-        <li><label>Persuade: <input type="number" id="skill-persuade" min="0" max="6" oninput="updateTotalDice('persuade')"></label></li>
-        <li><label>Search: <input type="number" id="skill-search" min="0" max="6" oninput="updateTotalDice('search')"></label></li>
-        <li><label>Tactics: <input type="number" id="skill-tactics" min="0" max="6" oninput="updateTotalDice('tactics')"></label></li>
+        <li><label data-tooltip-key="deceive">Deceive: <input type="number" id="skill-deceive" min="0" max="6" oninput="updateTotalDice('deceive')"></label></li>
+        <li><label data-tooltip-key="hide">Hide: <input type="number" id="skill-hide" min="0" max="6" oninput="updateTotalDice('hide')"></label></li>
+        <li><label data-tooltip-key="persuade">Persuade: <input type="number" id="skill-persuade" min="0" max="6" oninput="updateTotalDice('persuade')"></label></li>
+        <li><label data-tooltip-key="search">Search: <input type="number" id="skill-search" min="0" max="6" oninput="updateTotalDice('search')"></label></li>
+        <li><label data-tooltip-key="tactics">Tactics: <input type="number" id="skill-tactics" min="0" max="6" oninput="updateTotalDice('tactics')"></label></li>
       </ul>
     </fieldset>
 
     <fieldset style="min-width: 280px;"><legend>TEC (Technical)</legend>
-      <label>TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
+      <label data-tooltip-key="tec">TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
       <ul>
-        <li><label>Armament: <input type="number" id="skill-armament" min="0" max="6" oninput="updateTotalDice('armament')"></label></li>
-        <li><label>Computers: <input type="number" id="skill-computers" min="0" max="6" oninput="updateTotalDice('computers')"></label></li>
-        <li><label>Droids: <input type="number" id="skill-droids" min="0" max="6" oninput="updateTotalDice('droids')"></label></li>
-        <li><label>Medicine: <input type="number" id="skill-medicine" min="0" max="6" oninput="updateTotalDice('medicine')"></label></li>
-        <li><label>Vehicles: <input type="number" id="skill-vehicles" min="0" max="6" oninput="updateTotalDice('vehicles')"></label></li>
+        <li><label data-tooltip-key="armament">Armament: <input type="number" id="skill-armament" min="0" max="6" oninput="updateTotalDice('armament')"></label></li>
+        <li><label data-tooltip-key="computers">Computers: <input type="number" id="skill-computers" min="0" max="6" oninput="updateTotalDice('computers')"></label></li>
+        <li><label data-tooltip-key="droids">Droids: <input type="number" id="skill-droids" min="0" max="6" oninput="updateTotalDice('droids')"></label></li>
+        <li><label data-tooltip-key="medicine">Medicine: <input type="number" id="skill-medicine" min="0" max="6" oninput="updateTotalDice('medicine')"></label></li>
+        <li><label data-tooltip-key="vehicles">Vehicles: <input type="number" id="skill-vehicles" min="0" max="6" oninput="updateTotalDice('vehicles')"></label></li>
       </ul>
     </fieldset>
 
     <fieldset style="min-width: 280px;"><legend>THE FORCE</legend>
-      <label>THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
+      <label data-tooltip-key="force">THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
       <ul>
-        <li><label>Alter: <input type="number" id="skill-alter" min="0" max="6" oninput="updateTotalDice('alter')"></label></li>
-        <li><label>Control: <input type="number" id="skill-control" min="0" max="6" oninput="updateTotalDice('control')"></label></li>
-        <li><label>Sense: <input type="number" id="skill-sense" min="0" max="6" oninput="updateTotalDice('sense')"></label></li>
+        <li><label data-tooltip-key="alter">Alter: <input type="number" id="skill-alter" min="0" max="6" oninput="updateTotalDice('alter')"></label></li>
+        <li><label data-tooltip-key="control">Control: <input type="number" id="skill-control" min="0" max="6" oninput="updateTotalDice('control')"></label></li>
+        <li><label data-tooltip-key="sense">Sense: <input type="number" id="skill-sense" min="0" max="6" oninput="updateTotalDice('sense')"></label></li>
       </ul>
     </fieldset>
            </fieldset>

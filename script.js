@@ -118,6 +118,7 @@ window.addEventListener('DOMContentLoaded', () => {
   loadSupabaseItems('armor', 'armor-dropdown');
   loadSupabaseItems('equipment', 'equipment-dropdown');
   loadEncounters();
+  loadTooltips();
   syncWithTokenIfAvailable();
 });
 
@@ -344,6 +345,20 @@ function setupLockableField(dropdownId) {
     editBtn.style.display = 'none';
     clearBtn.style.display = 'none';
     wrapper.classList.remove('locked');
+  });
+}
+
+function loadTooltips() {
+  supabase.from('attributes_skills_tooltips').select('*').then(({ data, error }) => {
+    if (error || !data) return console.error('Tooltip load failed:', error);
+
+    data.forEach(({ name, tooltip }) => {
+      const safeKey = name.trim().toLowerCase().replace(/[^a-z0-9]/gi, '-');
+      const targets = document.querySelectorAll(`[data-tooltip-key="${safeKey}"]`);
+      targets.forEach(el => {
+        el.setAttribute('title', tooltip);
+      });
+    });
   });
 }
 
