@@ -1,9 +1,108 @@
 // Supabase setup and Owlbear token sync integration
 
-window.addEventListener('DOMContentLoaded', () => {
-  const tokenId = new URLSearchParams(window.location.search).get('tokenId');
-  if (tokenId) document.body.dataset.tokenId = tokenId;
+const speciesAttrs = {};
+const roleAttrs = {};
+const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
 
+function updateAttributeDisplay() {
+  attrFields.forEach(attr => {
+    const el = document.getElementById(`attr-${attr}`);
+    if (el) el.value = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
+  });
+  updateDerivedStats();
+}
+
+function loadSupabaseItems(table, dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  dropdown.innerHTML = '<option value="">-- Select --</option>';
+
+  supabase.from(table).select('*').then(({ data, error }) => {
+    if (error || !data) {
+      dropdown.innerHTML = '<option>Error loading</option>';
+      return;
+    }
+
+    data.sort((a, b) => a.name.localeCompare(b.name));
+    data.forEach(item => {
+      const option = document.createElement('option');
+      option.value = JSON.stringify(item);
+      option.textContent = item.name;
+      dropdown.appendChild(option);
+    });
+
+    dropdown.addEventListener('change', () => {
+  const selected = dropdown.value;
+  if (!selected) return;
+  const item = JSON.parse(selected);
+
+  if (dropdownId === 'char-species') {
+        attrFields.forEach(attr => {
+        const value = parseInt(item[attr]);
+        if (!isNaN(value)) {
+          speciesAttrs[attr] = value;
+        }
+      });
+      updateAttributeDisplay();
+      } else if (dropdownId === 'char-role') {
+        attrFields.forEach(attr => {
+          const value = parseInt(item[attr]);
+        if (!isNaN(value)) {
+          roleAttrs[attr] = value;
+        }
+        });
+        updateAttributeDisplay();
+      } else if (dropdownId === 'armor-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Dice: ${item.armor_dice || ''} | Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-armor">Remove</button>
+        `;
+        li.classList.add('armor-entry');
+        document.getElementById('armor-list').appendChild(li);
+        li.querySelector('.remove-armor').addEventListener('click', () => li.remove());
+      } else if (dropdownId === 'weapon-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong> [${item.category}]<br>
+          Skill: ${item.skill || ''} | Damage: ${item.damage || ''}<br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-weapon">Remove</button>
+        `;
+        li.classList.add('weapon-entry');
+        document.getElementById('weapon-list').appendChild(li);
+        li.querySelector('.remove-weapon').addEventListener('click', () => li.remove());
+      } else if (dropdownId === 'equipment-dropdown') {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${item.name}</strong><br>
+          Cost: ${item.cost || ''} | Special: ${item.special || ''}
+          <button type="button" class="remove-equipment">Remove</button>
+        `;
+        li.classList.add('equipment-entry');
+        document.getElementById('equipment-list').appendChild(li);
+        li.querySelector('.remove-equipment').addEventListener('click', () => li.remove());
+      }
+    });
+  });
+}
+let supabase;
+
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.querySelector('.theme-toggle');
+  const isDark = body.classList.toggle('dark');
+  body.classList.toggle('light', !isDark);
+  if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
+
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const tokenId = new URLSearchParams(window.location.search).get('tokenId');
+  if (tokenId) document.body.dataset.tokenId = tokenId;
   supabase = window.supabase.createClient(
     'https://czsplorlrzvanxpwkvru.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
@@ -18,40 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
   loadSupabaseItems('weapons', 'weapon-dropdown');
   loadSupabaseItems('armor', 'armor-dropdown');
   loadSupabaseItems('equipment', 'equipment-dropdown');
-  if (typeof loadEncounters === 'function') loadEncounters();
-  loadTooltips();
-  syncWithTokenIfAvailable();
-});
-
-const speciesAttrs = {};
-const roleAttrs = {};
-const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
-
-function updateAttributeDisplay() {
-  attrFields.forEach(attr => {
-    const el = document.getElementById(`attr-${attr}`);
-    if (el) el.value = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
-  });
-  updateDerivedStats();
-}
-      
-  // all supabase-dependent calls now run AFTER initialization
-  if (!window.supabase) {
-    console.error('Supabase not initialized. Aborting data load.');
-    return;
-  }
-
-  loadSupabaseItems('roles', 'char-role');
-  setupLockableField('char-role');
-  loadSupabaseItems('species', 'char-species');
-  setupLockableField('char-species');
-  loadSupabaseItems('edges', 'char-edge');
-  loadSupabaseItems('burdens', 'char-burden');
-  loadSupabaseItems('weapons', 'weapon-dropdown');
-  loadSupabaseItems('armor', 'armor-dropdown');
-  loadSupabaseItems('equipment', 'equipment-dropdown');
-  if (typeof loadEncounters === 'function') loadEncounters();
-  loadTooltips();
+  loadEncounters();
   syncWithTokenIfAvailable();
 });
 
@@ -98,8 +164,7 @@ function updateTotalDice(skillId) {
   const attr = attrMap[skillId] || 'dex';
   const attrVal = parseInt(document.getElementById(`attr-${attr}`).value || 0);
   const total = `${attrVal}D${skill > 0 ? '+' + skill : ''}`;
-  const totalEl = document.getElementById(`total-${skillId}`);
-  if (totalEl) totalEl.textContent = total;
+  document.getElementById(`total-${skillId}`).textContent = total;
   updateDerivedStats();
 }
 
@@ -208,10 +273,6 @@ function loadFromJSON() {
   input.click();
 }
 
-function printCharacterSheet() {
-  window.print();
-}
-
 function saveToCSV() {
   const formData = new FormData(document.getElementById('character-form'));
   let csv = 'Field,Value\n';
@@ -283,20 +344,6 @@ function setupLockableField(dropdownId) {
     editBtn.style.display = 'none';
     clearBtn.style.display = 'none';
     wrapper.classList.remove('locked');
-  });
-}
-
-function loadTooltips() {
-  supabase.from('attributes_skills_tooltips').select('*').then(({ data, error }) => {
-    if (error || !data) return console.error('Tooltip load failed:', error);
-
-    data.forEach(({ name, tooltip }) => {
-      const safeKey = name.trim().toLowerCase().replace(/[^a-z0-9]/gi, '-');
-      const targets = document.querySelectorAll(`[data-tooltip-key="${safeKey}"]`);
-      targets.forEach(el => {
-        el.setAttribute('title', tooltip);
-      });
-    });
   });
 }
 
