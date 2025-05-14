@@ -198,8 +198,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof loadEncounters === 'function') loadEncounters();
   loadTooltips();
   syncWithTokenIfAvailable();
-
-  loadSupabaseItems('roles', 'char-role');
   setupLockableField('char-role');
   loadSupabaseItems('species', 'char-species');
   setupLockableField('char-species');
