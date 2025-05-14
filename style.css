@@ -198,7 +198,34 @@ h1 {
   background-color: #eee;
 }
 
-/* Equipment display */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  button,
+  .theme-toggle,
+  .lock-btn,
+  input[type="file"],
+  #csv-upload {
+    display: none !important;
+  }
+
+  fieldset {
+    border: 1px solid #000;
+    background-color: white !important;
+    color: black;
+  }
+
+  form {
+    box-shadow: none;
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+}
+
+$1
 #weapon-list,
 #equipment-list {
   background: #fafafa;

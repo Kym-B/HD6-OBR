@@ -62,7 +62,8 @@ function loadSupabaseItems(table, dropdownId) {
           <button type="button" class="remove-armor">Remove</button>
         `;
         li.classList.add('armor-entry');
-        document.getElementById('armor-list').appendChild(li);
+        const armorList = document.getElementById('armor-list');
+        if (armorList) armorList.appendChild(li);
         li.querySelector('.remove-armor').addEventListener('click', () => li.remove());
       } else if (dropdownId === 'weapon-dropdown') {
         const li = document.createElement('li');
@@ -73,7 +74,8 @@ function loadSupabaseItems(table, dropdownId) {
           <button type="button" class="remove-weapon">Remove</button>
         `;
         li.classList.add('weapon-entry');
-        document.getElementById('weapon-list').appendChild(li);
+        const weaponList = document.getElementById('weapon-list');
+        if (weaponList) weaponList.appendChild(li);
         li.querySelector('.remove-weapon').addEventListener('click', () => li.remove());
       } else if (dropdownId === 'equipment-dropdown') {
         const li = document.createElement('li');
@@ -83,7 +85,8 @@ function loadSupabaseItems(table, dropdownId) {
           <button type="button" class="remove-equipment">Remove</button>
         `;
         li.classList.add('equipment-entry');
-        document.getElementById('equipment-list').appendChild(li);
+        const equipmentList = document.getElementById('equipment-list');
+        if (equipmentList) equipmentList.appendChild(li);
         li.querySelector('.remove-equipment').addEventListener('click', () => li.remove());
       }
     });
@@ -180,7 +183,8 @@ function updateTotalDice(skillId) {
   const attr = attrMap[skillId] || 'dex';
   const attrVal = parseInt(document.getElementById(`attr-${attr}`).value || 0);
   const total = `${attrVal}D${skill > 0 ? '+' + skill : ''}`;
-  document.getElementById(`total-${skillId}`).textContent = total;
+  const totalEl = document.getElementById(`total-${skillId}`);
+  if (totalEl) totalEl.textContent = total;
   updateDerivedStats();
 }
 
@@ -287,6 +291,10 @@ function loadFromJSON() {
     reader.readAsText(file);
   };
   input.click();
+}
+
+function printCharacterSheet() {
+  window.print();
 }
 
 function saveToCSV() {
