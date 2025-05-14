@@ -109,7 +109,9 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 
   loadSupabaseItems('roles', 'char-role');
+  setupLockableField('char-role');
   loadSupabaseItems('species', 'char-species');
+  setupLockableField('char-species');
   loadSupabaseItems('edges', 'char-edge');
   loadSupabaseItems('burdens', 'char-burden');
   loadSupabaseItems('weapons', 'weapon-dropdown');
@@ -284,6 +286,65 @@ function saveToCSV() {
   a.download = 'character.csv';
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function setupLockableField(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (!dropdown) return;
+
+  const wrapper = dropdown.closest('div');
+  if (!wrapper) return;
+
+  const setBtn = document.createElement('button');
+  setBtn.textContent = 'Set';
+  setBtn.type = 'button';
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.type = 'button';
+  editBtn.style.display = 'none';
+
+  const clearBtn = document.createElement('button');
+  clearBtn.textContent = 'Clear';
+  clearBtn.type = 'button';
+  clearBtn.style.display = 'none';
+
+  [setBtn, editBtn, clearBtn].forEach(btn => {
+    btn.style.marginLeft = '5px';
+    btn.classList.add('lock-btn');
+    wrapper.appendChild(btn);
+  });
+
+  setBtn.addEventListener('click', () => {
+    dropdown.disabled = true;
+    setBtn.style.display = 'none';
+    editBtn.style.display = 'inline-block';
+    clearBtn.style.display = 'inline-block';
+    wrapper.classList.add('locked');
+  });
+
+  editBtn.addEventListener('click', () => {
+    dropdown.disabled = false;
+    setBtn.style.display = 'inline-block';
+    editBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    wrapper.classList.remove('locked');
+  });
+
+  clearBtn.addEventListener('click', () => {
+    dropdown.disabled = false;
+    dropdown.value = '';
+    if (dropdownId === 'char-species') {
+      attrFields.forEach(attr => delete speciesAttrs[attr]);
+    } else if (dropdownId === 'char-role') {
+      attrFields.forEach(attr => delete roleAttrs[attr]);
+    }
+    updateAttributeDisplay();
+    setBtn.style.display = 'inline-block';
+    editBtn.style.display = 'none';
+    clearBtn.style.display = 'none';
+    wrapper.classList.remove('locked');
+  });
 }
 
 function loadFromCSV(event) {
