@@ -1,5 +1,17 @@
 // Supabase setup and Owlbear token sync integration
 
+const speciesAttrs = {};
+const roleAttrs = {};
+const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
+
+function updateAttributeDisplay() {
+  attrFields.forEach(attr => {
+    const el = document.getElementById(`attr-${attr}`);
+    if (el) el.value = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
+  });
+  updateDerivedStats();
+}
+
 function loadSupabaseItems(table, dropdownId) {
   const dropdown = document.getElementById(dropdownId);
   if (!dropdown) return;
@@ -20,19 +32,7 @@ function loadSupabaseItems(table, dropdownId) {
       dropdown.appendChild(option);
     });
 
-    const speciesAttrs = {};
-const roleAttrs = {};
-const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
-
-function updateAttributeDisplay() {
-  attrFields.forEach(attr => {
-    const el = document.getElementById(`attr-${attr}`);
-    if (el) el.value = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
-  });
-  updateDerivedStats();
-}
-
-dropdown.addEventListener('change', () => {
+    dropdown.addEventListener('change', () => {
   const selected = dropdown.value;
   if (!selected) return;
   const item = JSON.parse(selected);
