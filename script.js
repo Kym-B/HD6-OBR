@@ -1,5 +1,28 @@
 // Supabase setup and Owlbear token sync integration
 
+window.addEventListener('DOMContentLoaded', () => {
+  const tokenId = new URLSearchParams(window.location.search).get('tokenId');
+  if (tokenId) document.body.dataset.tokenId = tokenId;
+
+  supabase = window.supabase.createClient(
+    'https://czsplorlrzvanxpwkvru.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
+  );
+
+  loadSupabaseItems('roles', 'char-role');
+  setupLockableField('char-role');
+  loadSupabaseItems('species', 'char-species');
+  setupLockableField('char-species');
+  loadSupabaseItems('edges', 'char-edge');
+  loadSupabaseItems('burdens', 'char-burden');
+  loadSupabaseItems('weapons', 'weapon-dropdown');
+  loadSupabaseItems('armor', 'armor-dropdown');
+  loadSupabaseItems('equipment', 'equipment-dropdown');
+  if (typeof loadEncounters === 'function') loadEncounters();
+  loadTooltips();
+  syncWithTokenIfAvailable();
+});
+
 const speciesAttrs = {};
 const roleAttrs = {};
 const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
