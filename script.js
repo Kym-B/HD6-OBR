@@ -196,17 +196,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (typeof loadEncounters === 'function') loadEncounters();
   loadTooltips();
   syncWithTokenIfAvailable();
-  setupLockableField('char-role');
-  loadSupabaseItems('species', 'char-species');
-  setupLockableField('char-species');
-  loadSupabaseItems('edges', 'char-edge');
-  loadSupabaseItems('burdens', 'char-burden');
-  loadSupabaseItems('weapons', 'weapon-dropdown');
-  loadSupabaseItems('armor', 'armor-dropdown');
-  loadSupabaseItems('equipment', 'equipment-dropdown');
-  if (typeof loadEncounters === 'function') loadEncounters();
-  loadTooltips();
-  syncWithTokenIfAvailable();
 });
 
 function syncWithTokenIfAvailable() {
