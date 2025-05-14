@@ -16,12 +16,7 @@ body.dark textarea {
   background-color: #2a2a2a;
   color: #e0e0e0;
   border-color: #555;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
-
-  background-color: #2a2a2a;
-  color: #e0e0e0;
-  border-color: #555;
 }
 body {
   font-family: Arial, sans-serif;
@@ -156,7 +151,38 @@ h1 {
   font-size: 1.8rem;
 }
 
-/* Wound status visual indicators */
+/* Lock/Set/Edit button styles */
+.lock-btn {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  margin-left: 4px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: background-color 0.2s;
+}
+
+.lock-btn:hover {
+  background-color: #666;
+  opacity: 1;
+}
+
+.locked select,
+.locked .dropdown {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.locked label::after {
+  content: ' (Locked)';
+  color: #ccc;
+  font-size: 0.75rem;
+  margin-left: 5px;
+}
+
 #character-form.is-staggered input[type="number"] {
   border: 2px dashed orange;
   background-color: #fff3cd;
