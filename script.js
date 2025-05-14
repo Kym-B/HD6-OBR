@@ -39,12 +39,16 @@ dropdown.addEventListener('change', () => {
 
   if (dropdownId === 'char-species') {
         attrFields.forEach(attr => {
-        speciesAttrs[attr] = parseInt(item[attr] || 0);
+        if (item[attr] !== undefined) {
+          speciesAttrs[attr] = parseInt(item[attr]);
+        }
       });
       updateAttributeDisplay();
       } else if (dropdownId === 'char-role') {
         attrFields.forEach(attr => {
-          roleAttrs[attr] = parseInt(item[attr] || 0);
+          if (item[attr] !== undefined) {
+          roleAttrs[attr] = parseInt(item[attr]);
+        }
         });
         updateAttributeDisplay();
       } else if (dropdownId === 'armor-dropdown') {
