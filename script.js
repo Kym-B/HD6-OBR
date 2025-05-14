@@ -34,13 +34,25 @@ function loadSupabaseItems(table, dropdownId) {
         const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
         attrFields.forEach(attr => {
           const el = document.getElementById(`attr-${attr}`);
-          const dbValue = item[attr];
-          if (el && dbValue !== undefined) {
-            el.value = dbValue;
-            updateTotalDice(attr);
+          if (el && item[attr] !== undefined) {
+            el.value = item[attr];
           }
         });
         updateDerivedStats();
+      }
+
+      // Auto-fill attributes if a role is selected
+      if (dropdownId === 'char-role') {
+        console.log('[Role selected]', item);
+        const attrFields = ['dex', 'kno', 'mec', 'per', 'str', 'tec', 'force'];
+        attrFields.forEach(attr => {
+          const el = document.getElementById(`attr-${attr}`);
+          if (el && item[attr] !== undefined) {
+            el.value = item[attr];
+          }
+        });
+        updateDerivedStats();
+      }
       }
 
       if (dropdownId === 'armor-dropdown') {
