@@ -1,293 +1,156 @@
-// Supabase setup and Owlbear token sync integration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyperspace D6 Character Sheet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Hyperspace D6 Character Sheet</h1>
+  <div style="text-align: center; margin-bottom: 1rem;">
+    <button type="button" class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
 
-let supabase;
+  <form id="character-form">
+  <fieldset>
+    <legend>Character Details</legend>
+    <label>Name: <input type="text" id="char-name" name="char-name"></label>
+    <div class="field-group"><label>Role: <select id="char-role" name="char-role"></select></label></div>
+    <div class="field-group"><label>Species: <select id="char-species" name="char-species"></select></label></div>
+    <label>Homeworld: <input type="text" id="char-homeworld" name="char-homeworld"></label>
+    <label>Sex: <input type="text" id="char-sex" name="char-sex"></label>
+    <label>Age: <input type="number" id="char-age" name="char-age"></label>
+    <label>Height: <input type="text" id="char-height" name="char-height"></label>
+    <label>Weight: <input type="text" id="char-weight" name="char-weight"></label>
+    <label>Looks: <textarea id="char-looks" name="char-looks"></textarea></label>
+    <label>Personality: <textarea id="char-personality" name="char-personality"></textarea></label>
+    <label>Quote: <textarea id="char-quote" name="char-quote"></textarea></label>
+  </fieldset>
+    <fieldset id="all-attributes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+      <legend>Attributes & Skills</legend>
+      
+       <fieldset style="min-width: 280px;"><legend>DEX (Dexterity)</legend>
+      
+      <label data-tooltip-key="dex">DEX: <input type="number" id="attr-dex" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <ul>
+        <li><label data-tooltip-key="agility">Agility: <input type="number" id="skill-agility" min="0" max="6" oninput="updateTotalDice('agility')"></label></li>
+        <li><label data-tooltip-key="blasters">Blasters: <input type="number" id="skill-blasters" min="0" max="6" oninput="updateTotalDice('blasters')"></label></li>
+        <li><label data-tooltip-key="melee">Melee: <input type="number" id="skill-melee" min="0" max="6" oninput="updateTotalDice('melee')"></label></li>
+        <li><label data-tooltip-key="steal">Steal: <input type="number" id="skill-steal" min="0" max="6" oninput="updateTotalDice('steal')"></label></li>
+        <li><label data-tooltip-key="throw">Throw: <input type="number" id="skill-throw" min="0" max="6" oninput="updateTotalDice('throw')"></label></li>
+      </ul>
+          </fieldset>
+     <fieldset style="min-width: 280px;"><legend>STR (Strength)</legend>
+      <label data-tooltip-key="str">STR: <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <ul>
+        <li><label data-tooltip-key="athletics">Athletics: <input type="number" id="skill-athletics" min="0" max="6" oninput="updateTotalDice('athletics')"></label></li>
+        <li><label data-tooltip-key="brawl">Brawl: <input type="number" id="skill-brawl" min="0" max="6" oninput="updateTotalDice('brawl')"></label></li>
+        <li><label data-tooltip-key="intimidate">Intimidate: <input type="number" id="skill-intimidate" min="0" max="6" oninput="updateTotalDice('intimidate')"></label></li>
+        <li><label data-tooltip-key="stamina">Stamina: <input type="number" id="skill-stamina" min="0" max="6" oninput="updateTotalDice('stamina')"></label></li>
+        <li><label data-tooltip-key="swim">Swim: <input type="number" id="skill-swim" min="0" max="6" oninput="updateTotalDice('swim')"></label></li>
+      </ul>
+    </fieldset>
 
-// Track base attribute values from Species and Role
-const speciesAttrs = {};
-const roleAttrs = {};
-const attrFields = ['dex','kno','mec','per','str','tec','force'];
+    <fieldset style="min-width: 280px;"><legend>KNO (Knowledge)</legend>
+      <label data-tooltip-key="kno">KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
+      <ul>
+        <li><label data-tooltip-key="galaxy">Galaxy: <input type="number" id="skill-galaxy" min="0" max="6" oninput="updateTotalDice('galaxy')"></label></li>
+        <li><label data-tooltip-key="streetwise">Streetwise: <input type="number" id="skill-streetwise" min="0" max="6" oninput="updateTotalDice('streetwise')"></label></li>
+        <li><label data-tooltip-key="survival">Survival: <input type="number" id="skill-survival" min="0" max="6" oninput="updateTotalDice('survival')"></label></li>
+        <li><label data-tooltip-key="willpower">Willpower: <input type="number" id="skill-willpower" min="0" max="6" oninput="updateTotalDice('willpower')"></label></li>
+        <li><label data-tooltip-key="xenology">Xenology: <input type="number" id="skill-xenology" min="0" max="6" oninput="updateTotalDice('xenology')"></label></li>
+      </ul>
+    </fieldset>
 
-/**
- * Update attribute inputs and recompute derived stats
- */
-function updateAttributeDisplay() {
-  attrFields.forEach(attr => {
-    const el = document.getElementById(`attr-${attr}`);
-    if (el) {
-      const base = (speciesAttrs[attr] || 0) + (roleAttrs[attr] || 0);
-      el.value = base;
-    }
-  });
-  updateDerivedStats();
-}
+    <fieldset style="min-width: 280px;"><legend>MEC (Mechanical)</legend>
+      <label data-tooltip-key="mec">MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
+      <ul>
+        <li><label data-tooltip-key="astrogation">Astrogation: <input type="number" id="skill-astrogation" min="0" max="6" oninput="updateTotalDice('astrogation')"></label></li>
+        <li><label data-tooltip-key="drive">Drive: <input type="number" id="skill-drive" min="0" max="6" oninput="updateTotalDice('drive')"></label></li>
+        <li><label data-tooltip-key="gunnery">Gunnery: <input type="number" id="skill-gunnery" min="0" max="6" oninput="updateTotalDice('gunnery')"></label></li>
+        <li><label data-tooltip-key="pilot">Pilot: <input type="number" id="skill-pilot" min="0" max="6" oninput="updateTotalDice('pilot')"></label></li>
+        <li><label data-tooltip-key="sensors">Sensors: <input type="number" id="skill-sensors" min="0" max="6" oninput="updateTotalDice('sensors')"></label></li>
+      </ul>
+    </fieldset>
 
-/**
- * Calculate and display derived stats: Defense, Initiative, Resolve
- */
-function updateDerivedStats() {
-  const dex = parseInt(document.getElementById('attr-dex')?.value) || 0;
-  const agility = parseInt(document.getElementById('skill-agility')?.value) || 0;
-  const per = parseInt(document.getElementById('attr-per')?.value) || 0;
-  const tactics = parseInt(document.getElementById('skill-tactics')?.value) || 0;
-  const str = parseInt(document.getElementById('attr-str')?.value) || 0;
-  const stamina = parseInt(document.getElementById('skill-stamina')?.value) || 0;
+    <fieldset style="min-width: 280px;"><legend>PER (Perception)</legend>
+      <label data-tooltip-key="per">PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
+      <ul>
+        <li><label data-tooltip-key="deceive">Deceive: <input type="number" id="skill-deceive" min="0" max="6" oninput="updateTotalDice('deceive')"></label></li>
+        <li><label data-tooltip-key="hide">Hide: <input type="number" id="skill-hide" min="0" max="6" oninput="updateTotalDice('hide')"></label></li>
+        <li><label data-tooltip-key="persuade">Persuade: <input type="number" id="skill-persuade" min="0" max="6" oninput="updateTotalDice('persuade')"></label></li>
+        <li><label data-tooltip-key="search">Search: <input type="number" id="skill-search" min="0" max="6" oninput="updateTotalDice('search')"></label></li>
+        <li><label data-tooltip-key="tactics">Tactics: <input type="number" id="skill-tactics" min="0" max="6" oninput="updateTotalDice('tactics')"></label></li>
+      </ul>
+    </fieldset>
 
-  const def = 6 + dex + agility;
-  const init = 6 + per + tactics;
-  const res = 6 + str + stamina;
+    <fieldset style="min-width: 280px;"><legend>TEC (Technical)</legend>
+      <label data-tooltip-key="tec">TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
+      <ul>
+        <li><label data-tooltip-key="armament">Armament: <input type="number" id="skill-armament" min="0" max="6" oninput="updateTotalDice('armament')"></label></li>
+        <li><label data-tooltip-key="computers">Computers: <input type="number" id="skill-computers" min="0" max="6" oninput="updateTotalDice('computers')"></label></li>
+        <li><label data-tooltip-key="droids">Droids: <input type="number" id="skill-droids" min="0" max="6" oninput="updateTotalDice('droids')"></label></li>
+        <li><label data-tooltip-key="medicine">Medicine: <input type="number" id="skill-medicine" min="0" max="6" oninput="updateTotalDice('medicine')"></label></li>
+        <li><label data-tooltip-key="vehicles">Vehicles: <input type="number" id="skill-vehicles" min="0" max="6" oninput="updateTotalDice('vehicles')"></label></li>
+      </ul>
+    </fieldset>
 
-  document.getElementById('derived-defense').value = def;
-  document.getElementById('derived-initiative').value = init;
-  document.getElementById('derived-resolve').value = res;
-  const current = document.getElementById('current-resolve');
-  if (current && (!current.value || isNaN(parseInt(current.value)))) {
-    current.value = res;
-  }
-}
+    <fieldset style="min-width: 280px;"><legend>THE FORCE</legend>
+      <label data-tooltip-key="force">THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
+      <ul>
+        <li><label data-tooltip-key="alter">Alter: <input type="number" id="skill-alter" min="0" max="6" oninput="updateTotalDice('alter')"></label></li>
+        <li><label data-tooltip-key="control">Control: <input type="number" id="skill-control" min="0" max="6" oninput="updateTotalDice('control')"></label></li>
+        <li><label data-tooltip-key="sense">Sense: <input type="number" id="skill-sense" min="0" max="6" oninput="updateTotalDice('sense')"></label></li>
+      </ul>
+    </fieldset>
+           </fieldset>
 
-/**
- * Fetches items from a Supabase table and populates a dropdown.
- */
-function loadSupabaseItems(table, dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  if (!dropdown) return;
-  dropdown.innerHTML = '<option value="">-- Select --</option>';
-  supabase.from(table).select('*').then(({ data, error }) => {
-    if (error || !data) {
-      dropdown.innerHTML = '<option>Error loading</option>';
-      return;
-    }
-    data.sort((a, b) => a.name.localeCompare(b.name));
-    data.forEach(item => {
-      const opt = document.createElement('option');
-      opt.value = JSON.stringify(item);
-      opt.textContent = item.name;
-      dropdown.appendChild(opt);
-    });
-  });
-}
+    <fieldset>
+      <legend>Weapons</legend>
+      <select id="weapon-dropdown"></select>
+      <ul id="weapon-list"></ul>
+    </fieldset>
 
-/**
- * Set up a dropdown field with lock/edit buttons.
- */
-function setupLockableField(fieldId) {
-  const dropdown = document.getElementById(fieldId);
-  const lockBtn = document.getElementById(`lock-${fieldId}`);
-  const editBtn = document.getElementById(`edit-${fieldId}`);
-  if (!dropdown || !lockBtn || !editBtn) return;
-  // Initially, dropdown unlocked, show lock button
-  editBtn.style.display = 'none';
-  lockBtn.style.display = 'inline-block';
+    <fieldset>
+      <legend>Armor</legend>
+      <select id="armor-dropdown"></select>
+      <div id="equipped-armor"></div>
+    </fieldset>
 
-  lockBtn.addEventListener('click', () => {
-    dropdown.disabled = true;
-    lockBtn.style.display = 'none';
-    editBtn.style.display = 'inline-block';
-  });
-  editBtn.addEventListener('click', () => {
-    dropdown.disabled = false;
-    editBtn.style.display = 'none';
-    lockBtn.style.display = 'inline-block';
-  });
-}
+    <fieldset>
+      <legend>Equipment</legend>
+      <select id="equipment-dropdown"></select>
+      <ul id="equipment-list"></ul>
+    </fieldset>
 
-/**
- * Add an armor item to the list with remove functionality.
- */
-function addArmorToList(item) {
-  const list = document.getElementById('armor-list');
-  if (!list) return;
-  const li = document.createElement('li');
-  li.innerHTML = `
-    <strong>${item.name}</strong><br>
-    Dice: ${item.armor_dice||''} | Cost: ${item.cost||''} | Special: ${item.special||''}
-    <button type="button" class="remove-armor">Remove</button>
-  `;
-  li.classList.add('armor-entry');
-  li.querySelector('.remove-armor').addEventListener('click',()=>li.remove());
-  list.appendChild(li);
-}
+    <fieldset>
+      <legend>Derived Stats</legend>
+      <label>Defense: <input type="number" id="derived-defense" readonly></label>
+      <label>Initiative: <input type="number" id="derived-initiative" readonly></label>
+      <label>Resolve: <input type="number" id="derived-resolve" readonly></label>
+      <label>Current Resolve: <input type="number" id="current-resolve"></label>
+    </fieldset>
 
-/**
- * Add a weapon item to the list with remove functionality.
- */
-function addWeaponToList(item) {
-  const list = document.getElementById('weapon-list');
-  if (!list) return;
-  const li = document.createElement('li');
-  li.innerHTML = `
-    <strong>${item.name}</strong> [${item.category}]<br>
-    Skill: ${item.skill||''} | Damage: ${item.damage||''}<br>
-    Cost: ${item.cost||''} | Special: ${item.special||''}
-    <button type="button" class="remove-weapon">Remove</button>
-  `;
-  li.classList.add('weapon-entry');
-  li.querySelector('.remove-weapon').addEventListener('click',()=>li.remove());
-  list.appendChild(li);
-}
+    <fieldset>
+      <legend>Wound Status</legend>
+      <label><input type="checkbox" id="status-staggered"> Staggered</label>
+      <label><input type="checkbox" id="status-stunned"> Stunned</label>
+      <label><input type="checkbox" id="status-downed"> Downed</label>
+    </fieldset>
+    <fieldset>
+      <legend>Data Management</legend>
+      <button type="button" onclick="printCharacterSheet()">Print</button>
+      <button type="button" onclick="saveToJSON()">Export to JSON</button>
+      <button type="button" onclick="loadFromJSON()">Import from JSON</button>
+      <button type="button" onclick="saveToCSV()">Export to CSV</button>
+      <input type="file" id="csv-upload" accept=".csv" onchange="loadFromCSV(event)" />
+      <button type="button" onclick="saveToSupabase()">Save to Supabase</button>
+    </fieldset>
+  </form>
 
-/**
- * Add an equipment item to the list with remove functionality.
- */
-function addEquipmentToList(item) {
-  const list = document.getElementById('equipment-list');
-  if (!list) return;
-  const li = document.createElement('li');
-  li.innerHTML = `
-    <strong>${item.name}</strong><br>
-    Cost: ${item.cost||''} | Special: ${item.special||''}
-    <button type="button" class="remove-equipment">Remove</button>
-  `;
-  li.classList.add('equipment-entry');
-  li.querySelector('.remove-equipment').addEventListener('click',()=>li.remove());
-  list.appendChild(li);
-}
-
-/**
- * Toggle between dark and light themes.
- */
-function toggleTheme() {
-  const body = document.body;
-  const isDark = body.classList.toggle('dark');
-  body.classList.toggle('light', !isDark);
-  const btn = document.querySelector('.theme-toggle');
-  if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-}
-
-/**
- * Print the character sheet.
- */
-function printSheet() {
-  window.print();
-}
-
-/**
- * Save current sheet to JSON file.
- */
-function saveToJSON() {
-  const formData = new FormData(document.getElementById('character-form'));
-  const data = {};
-  formData.forEach((val,key)=>data[key]=val);
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='character.json'; a.click(); URL.revokeObjectURL(url);
-}
-
-/**
- * Load sheet from JSON file.
- */
-function loadFromJSON() {
-  const input=document.createElement('input'); input.type='file'; input.accept='application/json';
-  input.onchange=()=>{
-    const file=input.files[0];
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const data=JSON.parse(reader.result);
-      Object.keys(data).forEach(key=>{
-        const el=document.getElementById(key);
-        if(el) el.value=data[key];
-      });
-      updateAttributeDisplay();
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-}
-
-/**
- * Save current sheet to CSV file.
- */
-function saveToCSV() {
-  const formData=new FormData(document.getElementById('character-form'));
-  let csv='Field,Value\n';
-  formData.forEach((val,key)=>csv+=`${key},${val}\n`);
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download='character.csv'; a.click(); URL.revokeObjectURL(url);
-}
-
-/**
- * Load sheet from CSV file.
- */
-function loadFromCSV(event) {
-  const file=event.target.files[0];
-  const reader=new FileReader();
-  reader.onload=()=>{
-    reader.result.split('\n').slice(1).forEach(line=>{
-      const [key,val]=line.split(',');
-      const el=document.getElementById(key);
-      if(el) el.value=val.trim();
-    });
-    updateAttributeDisplay();
-  };
-  reader.readAsText(file);
-}
-
-/**
- * Load tooltips for attributes and skills from Supabase.
- */
-function loadTooltips() {
-  const table='attributes_skills_tooltips';
-  supabase.from(table).select('name,tooltip').then(({data})=>{
-    data.forEach(item=>{
-      const el=document.querySelector(`[data-tooltip="${item.name}"]`);
-      if(el) el.title=item.tooltip;
-    });
-  });
-}
-
-/**
- * Sync with Owlbear token if provided and load saved sheet.
- */
-function syncWithTokenIfAvailable() {
-  const tokenId=document.body.dataset.tokenId;
-  if(!tokenId) return;
-  supabase.from('characters').select('sheet').eq('token_id',tokenId).single().then(({data})=>{
-    if(data && data.sheet) {
-      const sheet=JSON.parse(data.sheet);
-      Object.keys(sheet).forEach(key=>{
-        const el=document.getElementById(key);
-        if(el) el.value=sheet[key];
-      });
-      updateAttributeDisplay();
-    }
-  });
-}
-
-// Main initialization after DOM is loaded
-// Wrapping initialization in `DOMContentLoaded` guarantees the DOM is ready before any element lookups or Supabase calls, preventing timing issues.
-window.addEventListener('DOMContentLoaded', () => {
-  // Initialize Supabase client (must remain exactly as-is)
-  supabase = window.supabase.createClient(
-    'https://czsplorlrzvanxpwkvru.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
-  );
-
-  // Species selection
-  loadSupabaseItems('species', 'char-species');
-  document.getElementById('char-species')?.addEventListener('change', e => {
-    const item = JSON.parse(e.target.value || '{}');
-    attrFields.forEach(attr => speciesAttrs[attr] = parseInt(item[attr]) || 0);
-    updateAttributeDisplay();
-  });
-
-  // Role selection
-  loadSupabaseItems('roles', 'char-role');
-  document.getElementById('char-role')?.addEventListener('change', e => {
-    const item = JSON.parse(e.target.value || '{}');
-    attrFields.forEach(attr => roleAttrs[attr] = parseInt(item[attr]) || 0);
-    updateAttributeDisplay();
-  });
-
-  // Initial derived stats calculation
-  updateDerivedStats();
-
-  // Populate other dropdowns (edges, burdens, weapons, armor, equipment)
-  loadSupabaseItems('edges', 'char-edge');
-  loadSupabaseItems('burdens', 'char-burden');
-  loadSupabaseItems('weapons', 'weapon-dropdown');
-  loadSupabaseItems('armor', 'armor-dropdown');
-  loadSupabaseItems('equipment', 'equipment-dropdown');
-
-  // Additional event listeners for item lists, theme toggle, printing, tooltips, etc.
-});
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+<script src="script.js"></script>
+</body>
+</html>
