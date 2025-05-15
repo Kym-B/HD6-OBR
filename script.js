@@ -255,6 +255,8 @@ function syncWithTokenIfAvailable() {
 // Wrapping initialization in `DOMContentLoaded` guarantees the DOM is ready before any element lookups or Supabase calls, preventing timing issues.
 window.addEventListener('DOMContentLoaded', () => {
   // Initialize Supabase client (must remain exactly as-is)
-  supabase = window.supabase.createClient(
-    'https://czsplorlrzvanxpwkvru.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVB...
+ supabase = window.supabase.createClient(
+  'https://czsplorlrzvanxpwkvru.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6c3Bsb3Jscnp2YW54cHdrdnJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNzg3OTUsImV4cCI6MjA2MjY1NDc5NX0.XfJ3e6VlRmyd-ypchibd2jz03hEgZ9m5L1m8o7yFcdY'
+);
+
