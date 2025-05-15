@@ -7,7 +7,7 @@ const speciesAttrs = {};
 const roleAttrs = {};
 const attrFields = ['dex','kno','mec','per','str','tec','force'];
 
-$1// This function sums 'speciesAttrs' and 'roleAttrs' for each attribute input, ensuring base values update correctly, then calls updateDerivedStats to refresh derived scores.
+// This function sums 'speciesAttrs' and 'roleAttrs' for each attribute input, ensuring base values update correctly, then calls updateDerivedStats to refresh derived scores.
 function updateAttributeDisplay() {
   attrFields.forEach(attr => {
     const el = document.getElementById(`attr-${attr}`);
@@ -19,7 +19,7 @@ function updateAttributeDisplay() {
   updateDerivedStats();
 }
 
-$1// Derived stats are recalculated here using current attribute and skill inputs, and the Current Resolve is initialized if empty.
+// Derived stats are recalculated here using current attribute and skill inputs, and the Current Resolve is initialized if empty.
 function updateDerivedStats() {
   const dex = parseInt(document.getElementById('attr-dex')?.value) || 0;
   const agility = parseInt(document.getElementById('skill-agility')?.value) || 0;
