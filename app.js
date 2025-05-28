@@ -24,27 +24,17 @@ const skillToId = {
 };
 
 // 2. Fetch lookup data from Supabase
-// Note: these '.from()' calls must match your Supabase table names exactly
-// Replace 'species' and 'roles' if your schema uses different table names
-
-async function async function fetchSpecies() {
+// Note: Table names must match exactly
+async function fetchSpecies() {
   const { data, error } = await supabase
     .from('species')
     .select('name, dex, kno, mec, per, str, tec, for');
   if (error) return console.error('Error fetching species:', error);
   data.forEach(s => {
-    // note: 'for' is a reserved word, so use bracket notation
     speciesData[s.name] = {
-      DEX: s.dex,
-      KNO: s.kno,
-      MEC: s.mec,
-      PER: s.per,
-      STR: s.str,
-      TEC: s.tec,
-      FOR: s['for']
+      DEX: s.dex, KNO: s.kno, MEC: s.mec, PER: s.per,
+      STR: s.str, TEC: s.tec, FOR: s['for']
     };
-  });
-}
   });
 }
 
@@ -92,7 +82,6 @@ function updateAttributes() {
 
 // 4b. Update skill pips based on role boosts
 function updateSkills() {
-  // reset all to zero
   Object.values(skillToId).forEach(id => {
     const inp = document.getElementById(id);
     if (inp) inp.value = 0;
@@ -112,11 +101,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([fetchSpecies(), fetchRoles()]);
   populateSelectors();
   document.getElementById('species-select')
-          .addEventListener('change', () => { updateAttributes(); updateSkills(); });
+    .addEventListener('change', () => { updateAttributes(); updateSkills(); });
   document.getElementById('role-select')
-          .addEventListener('change',    () => { updateAttributes(); updateSkills(); });
+    .addEventListener('change',    () => { updateAttributes(); updateSkills(); });
   updateAttributes();
   updateSkills();
 });
-
-// Double-check that index.html includes: <script type="module" src="app.js"></script>
