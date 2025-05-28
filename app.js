@@ -24,6 +24,9 @@ const skillToId = {
 };
 
 // 2. Fetch lookup data from Supabase
+// Note: these '.from()' calls must match your Supabase table names exactly
+// Replace 'species' and 'roles' if your schema uses different table names
+
 async function fetchSpecies() {
   const { data, error } = await supabase
     .from('species')
