@@ -26,7 +26,55 @@ const skillToId = {
 // 2. Fetch lookup data from Supabase
 // Note: Table names must match exactly
 async function fetchSpecies() {
+  // Fetch all columns to inspect actual field names
   const { data, error } = await supabase
+    .from('species')
+    .select('*');
+  if (error) {
+    console.error('Error fetching species:', error);
+    return;
+  }
+  console.log('🐙 Raw species data:', data);
+  data.forEach(s => {
+    // TODO: replace these key lookups with actual column names from the raw data above
+    speciesData[s.name] = {
+      DEX: s.dex,
+      KNO: s.kno,
+      MEC: s.mec,
+      PER: s.per,
+      STR: s.str,
+      TEC: s.tec,
+      FOR: s['for']
+    };
+  });
+}
+
+async function fetchRoles() {
+  // Fetch all columns to inspect actual field names
+  const { data, error } = await supabase
+    .from('roles')
+    .select('*');
+  if (error) {
+    console.error('Error fetching roles:', error);
+    return;
+  }
+  console.log('🐙 Raw roles data:', data);
+  data.forEach(r => {
+    // TODO: replace these property accesses with the correct column names
+    roleData[r.name] = {
+      attrs: {
+        DEX: r.dex_mod,
+        KNO: r.kno_mod,
+        MEC: r.mec_mod,
+        PER: r.per_mod,
+        STR: r.str_mod,
+        TEC: r.tec_mod,
+        FOR: r.for_mod
+      },
+      skillBoosts: r.skill_boosts || []
+    };
+  });
+}= await supabase
     .from('species')
     .select('name, dex, kno, mec, per, str, tec, for');
   if (error) return console.error('Error fetching species:', error);
