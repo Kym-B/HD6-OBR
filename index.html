@@ -1,156 +1,225 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hyperspace D6 Character Sheet</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyperspaceD6 Character Sheet</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hyperspace D6 Character Sheet</h1>
-  <div style="text-align: center; margin-bottom: 1rem;">
-    <button type="button" class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-  </div>
+  <form id="character-sheet">
+    <h1>HyperspaceD6 Character Sheet</h1>
 
-  <form id="character-form">
-  <fieldset>
-    <legend>Character Details</legend>
-    <label>Name: <input type="text" id="char-name" name="char-name"></label>
-    <div class="field-group"><label>Species: <select id="char-species" name="char-species"></select></label></div>
-    <div class="field-group"><label>Role: <select id="char-role" name="char-role"></select></label></div>
-    <label>Homeworld: <input type="text" id="char-homeworld" name="char-homeworld"></label>
-    <label>Sex: <input type="text" id="char-sex" name="char-sex"></label>
-    <label>Age: <input type="number" id="char-age" name="char-age"></label>
-    <label>Height: <input type="text" id="char-height" name="char-height"></label>
-    <label>Weight: <input type="text" id="char-weight" name="char-weight"></label>
-    <label>Looks: <textarea id="char-looks" name="char-looks"></textarea></label>
-    <label>Personality: <textarea id="char-personality" name="char-personality"></textarea></label>
-    <label>Quote: <textarea id="char-quote" name="char-quote"></textarea></label>
-  </fieldset>
-    <fieldset id="all-attributes" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
-      <legend>Attributes & Skills</legend>
-      
-       <fieldset style="min-width: 280px;"><legend>DEX (Dexterity)</legend>
-      
-      <label data-tooltip-key="dex">DEX: <input type="number" id="attr-dex" min="1" max="6" oninput="updateDerivedStats()"></label>
-      <ul>
-        <li><label data-tooltip-key="agility">Agility: <input type="number" id="skill-agility" min="0" max="6" oninput="updateTotalDice('agility')"></label></li>
-        <li><label data-tooltip-key="blasters">Blasters: <input type="number" id="skill-blasters" min="0" max="6" oninput="updateTotalDice('blasters')"></label></li>
-        <li><label data-tooltip-key="melee">Melee: <input type="number" id="skill-melee" min="0" max="6" oninput="updateTotalDice('melee')"></label></li>
-        <li><label data-tooltip-key="steal">Steal: <input type="number" id="skill-steal" min="0" max="6" oninput="updateTotalDice('steal')"></label></li>
-        <li><label data-tooltip-key="throw">Throw: <input type="number" id="skill-throw" min="0" max="6" oninput="updateTotalDice('throw')"></label></li>
-      </ul>
-          </fieldset>
-     <fieldset style="min-width: 280px;"><legend>STR (Strength)</legend>
-      <label data-tooltip-key="str">STR: <input type="number" id="attr-str" min="1" max="6" oninput="updateDerivedStats()"></label>
-      <ul>
-        <li><label data-tooltip-key="athletics">Athletics: <input type="number" id="skill-athletics" min="0" max="6" oninput="updateTotalDice('athletics')"></label></li>
-        <li><label data-tooltip-key="brawl">Brawl: <input type="number" id="skill-brawl" min="0" max="6" oninput="updateTotalDice('brawl')"></label></li>
-        <li><label data-tooltip-key="intimidate">Intimidate: <input type="number" id="skill-intimidate" min="0" max="6" oninput="updateTotalDice('intimidate')"></label></li>
-        <li><label data-tooltip-key="stamina">Stamina: <input type="number" id="skill-stamina" min="0" max="6" oninput="updateTotalDice('stamina')"></label></li>
-        <li><label data-tooltip-key="swim">Swim: <input type="number" id="skill-swim" min="0" max="6" oninput="updateTotalDice('swim')"></label></li>
-      </ul>
-    </fieldset>
+    <!-- Character Details -->
+    <section id="basic-info">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name">
+      <label for="role-select">Role:</label>
+      <select id="role-select"></select>
+      <label for="species-select">Species:</label>
+      <select id="species-select"></select>
+      <label for="homeworld-select">Homeworld:</label>
+      <select id="homeworld-select"></select>
+      <label for="sex">Sex:</label>
+      <input type="text" id="sex" name="sex">
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" min="0">
+      <label for="height">Height:</label>
+      <input type="text" id="height" name="height">
+      <label for="weight">Weight:</label>
+      <input type="text" id="weight" name="weight">
+    </section>
 
-    <fieldset style="min-width: 280px;"><legend>KNO (Knowledge)</legend>
-      <label data-tooltip-key="kno">KNO: <input type="number" id="attr-kno" min="1" max="6"></label>
-      <ul>
-        <li><label data-tooltip-key="galaxy">Galaxy: <input type="number" id="skill-galaxy" min="0" max="6" oninput="updateTotalDice('galaxy')"></label></li>
-        <li><label data-tooltip-key="streetwise">Streetwise: <input type="number" id="skill-streetwise" min="0" max="6" oninput="updateTotalDice('streetwise')"></label></li>
-        <li><label data-tooltip-key="survival">Survival: <input type="number" id="skill-survival" min="0" max="6" oninput="updateTotalDice('survival')"></label></li>
-        <li><label data-tooltip-key="willpower">Willpower: <input type="number" id="skill-willpower" min="0" max="6" oninput="updateTotalDice('willpower')"></label></li>
-        <li><label data-tooltip-key="xenology">Xenology: <input type="number" id="skill-xenology" min="0" max="6" oninput="updateTotalDice('xenology')"></label></li>
-      </ul>
-    </fieldset>
+    <!-- Appearance & Personality -->
+    <section id="appearance">
+      <h2>Appearance & Personality</h2>
+      <label for="looks">Looks:</label>
+      <textarea id="looks" name="looks" rows="2"></textarea>
+      <label for="personality">Personality:</label>
+      <textarea id="personality" name="personality" rows="2"></textarea>
+      <label for="quote">Quote:</label>
+      <input type="text" id="quote" name="quote">
+    </section>
 
-    <fieldset style="min-width: 280px;"><legend>MEC (Mechanical)</legend>
-      <label data-tooltip-key="mec">MEC: <input type="number" id="attr-mec" min="1" max="6"></label>
-      <ul>
-        <li><label data-tooltip-key="astrogation">Astrogation: <input type="number" id="skill-astrogation" min="0" max="6" oninput="updateTotalDice('astrogation')"></label></li>
-        <li><label data-tooltip-key="drive">Drive: <input type="number" id="skill-drive" min="0" max="6" oninput="updateTotalDice('drive')"></label></li>
-        <li><label data-tooltip-key="gunnery">Gunnery: <input type="number" id="skill-gunnery" min="0" max="6" oninput="updateTotalDice('gunnery')"></label></li>
-        <li><label data-tooltip-key="pilot">Pilot: <input type="number" id="skill-pilot" min="0" max="6" oninput="updateTotalDice('pilot')"></label></li>
-        <li><label data-tooltip-key="sensors">Sensors: <input type="number" id="skill-sensors" min="0" max="6" oninput="updateTotalDice('sensors')"></label></li>
-      </ul>
-    </fieldset>
+    <!-- Attributes & Skills -->
+    <section id="attributes">
+      <h2>Attributes & Skills</h2>
 
-    <fieldset style="min-width: 280px;"><legend>PER (Perception)</legend>
-      <label data-tooltip-key="per">PER: <input type="number" id="attr-per" min="1" max="6" oninput="updateDerivedStats()"></label>
-      <ul>
-        <li><label data-tooltip-key="deceive">Deceive: <input type="number" id="skill-deceive" min="0" max="6" oninput="updateTotalDice('deceive')"></label></li>
-        <li><label data-tooltip-key="hide">Hide: <input type="number" id="skill-hide" min="0" max="6" oninput="updateTotalDice('hide')"></label></li>
-        <li><label data-tooltip-key="persuade">Persuade: <input type="number" id="skill-persuade" min="0" max="6" oninput="updateTotalDice('persuade')"></label></li>
-        <li><label data-tooltip-key="search">Search: <input type="number" id="skill-search" min="0" max="6" oninput="updateTotalDice('search')"></label></li>
-        <li><label data-tooltip-key="tactics">Tactics: <input type="number" id="skill-tactics" min="0" max="6" oninput="updateTotalDice('tactics')"></label></li>
-      </ul>
-    </fieldset>
+      <!-- Dexterity -->
+      <div class="attr-section">
+        <h3>Dexterity (DEX) <input type="number" id="dex-dice" name="dex-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="dex-agility">Agility:</label>
+          <input type="number" id="dex-agility" name="dex-agility" min="0" max="6">
+          <label for="dex-blasters">Blasters:</label>
+          <input type="number" id="dex-blasters" name="dex-blasters" min="0" max="6">
+          <label for="dex-melee">Melee:</label>
+          <input type="number" id="dex-melee" name="dex-melee" min="0" max="6">
+          <label for="dex-steal">Steal:</label>
+          <input type="number" id="dex-steal" name="dex-steal" min="0" max="6">
+          <label for="dex-throw">Throw:</label>
+          <input type="number" id="dex-throw" name="dex-throw" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset style="min-width: 280px;"><legend>TEC (Technical)</legend>
-      <label data-tooltip-key="tec">TEC: <input type="number" id="attr-tec" min="1" max="6"></label>
-      <ul>
-        <li><label data-tooltip-key="armament">Armament: <input type="number" id="skill-armament" min="0" max="6" oninput="updateTotalDice('armament')"></label></li>
-        <li><label data-tooltip-key="computers">Computers: <input type="number" id="skill-computers" min="0" max="6" oninput="updateTotalDice('computers')"></label></li>
-        <li><label data-tooltip-key="droids">Droids: <input type="number" id="skill-droids" min="0" max="6" oninput="updateTotalDice('droids')"></label></li>
-        <li><label data-tooltip-key="medicine">Medicine: <input type="number" id="skill-medicine" min="0" max="6" oninput="updateTotalDice('medicine')"></label></li>
-        <li><label data-tooltip-key="vehicles">Vehicles: <input type="number" id="skill-vehicles" min="0" max="6" oninput="updateTotalDice('vehicles')"></label></li>
-      </ul>
-    </fieldset>
+      <!-- Knowledge -->
+      <div class="attr-section">
+        <h3>Knowledge (KNO) <input type="number" id="kno-dice" name="kno-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="kno-galaxy">Galaxy:</label>
+          <input type="number" id="kno-galaxy" name="kno-galaxy" min="0" max="6">
+          <label for="kno-streetwise">Streetwise:</label>
+          <input type="number" id="kno-streetwise" name="kno-streetwise" min="0" max="6">
+          <label for="kno-survival">Survival:</label>
+          <input type="number" id="kno-survival" name="kno-survival" min="0" max="6">
+          <label for="kno-willpower">Willpower:</label>
+          <input type="number" id="kno-willpower" name="kno-willpower" min="0" max="6">
+          <label for="kno-xenology">Xenology:</label>
+          <input type="number" id="kno-xenology" name="kno-xenology" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset style="min-width: 280px;"><legend>THE FORCE</legend>
-      <label data-tooltip-key="force">THE FORCE: <input type="number" id="attr-force" min="1" max="6"></label>
-      <ul>
-        <li><label data-tooltip-key="alter">Alter: <input type="number" id="skill-alter" min="0" max="6" oninput="updateTotalDice('alter')"></label></li>
-        <li><label data-tooltip-key="control">Control: <input type="number" id="skill-control" min="0" max="6" oninput="updateTotalDice('control')"></label></li>
-        <li><label data-tooltip-key="sense">Sense: <input type="number" id="skill-sense" min="0" max="6" oninput="updateTotalDice('sense')"></label></li>
-      </ul>
-    </fieldset>
-           </fieldset>
+      <!-- Mechanical -->
+      <div class="attr-section">
+        <h3>Mechanical (MEC) <input type="number" id="mec-dice" name="mec-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="mec-astrogation">Astrogation:</label>
+          <input type="number" id="mec-astrogation" name="mec-astrogation" min="0" max="6">
+          <label for="mec-drive">Drive:</label>
+          <input type="number" id="mec-drive" name="mec-drive" min="0" max="6">
+          <label for="mec-gunnery">Gunnery:</label>
+          <input type="number" id="mec-gunnery" name="mec-gunnery" min="0" max="6">
+          <label for="mec-pilot">Pilot:</label>
+          <input type="number" id="mec-pilot" name="mec-pilot" min="0" max="6">
+          <label for="mec-sensors">Sensors:</label>
+          <input type="number" id="mec-sensors" name="mec-sensors" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset>
-      <legend>Weapons</legend>
-      <select id="weapon-dropdown"></select>
-      <ul id="weapon-list"></ul>
-    </fieldset>
+      <!-- Perception -->
+      <div class="attr-section">
+        <h3>Perception (PER) <input type="number" id="per-dice" name="per-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="per-deceive">Deceive:</label>
+          <input type="number" id="per-deceive" name="per-deceive" min="0" max="6">
+          <label for="per-hide">Hide:</label>
+          <input type="number" id="per-hide" name="per-hide" min="0" max="6">
+          <label for="per-persuade">Persuade:</label>
+          <input type="number" id="per-persuade" name="per-persuade" min="0" max="6">
+          <label for="per-search">Search:</label>
+          <input type="number" id="per-search" name="per-search" min="0" max="6">
+          <label for="per-tactics">Tactics:</label>
+          <input type="number" id="per-tactics" name="per-tactics" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset>
-      <legend>Armor</legend>
-      <select id="armor-dropdown"></select>
-      <div id="equipped-armor"></div>
-    </fieldset>
+      <!-- Strength -->
+      <div class="attr-section">
+        <h3>Strength (STR) <input type="number" id="str-dice" name="str-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="str-athletics">Athletics:</label>
+          <input type="number" id="str-athletics" name="str-athletics" min="0" max="6">
+          <label for="str-brawl">Brawl:</label>
+          <input type="number" id="str-brawl" name="str-brawl" min="0" max="6">
+          <label for="str-intimidate">Intimidate:</label>
+          <input type="number" id="str-intimidate" name="str-intimidate" min="0" max="6">
+          <label for="str-stamina">Stamina:</label>
+          <input type="number" id="str-stamina" name="str-stamina" min="0" max="6">
+          <label for="str-swim">Swim:</label>
+          <input type="number" id="str-swim" name="str-swim" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset>
-      <legend>Equipment</legend>
-      <select id="equipment-dropdown"></select>
-      <ul id="equipment-list"></ul>
-    </fieldset>
+      <!-- Technical -->
+      <div class="attr-section">
+        <h3>Technical (TEC) <input type="number" id="tec-dice" name="tec-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="tec-armament">Armament:</label>
+          <input type="number" id="tec-armament" name="tec-armament" min="0" max="6">
+          <label for="tec-computers">Computers:</label>
+          <input type="number" id="tec-computers" name="tec-computers" min="0" max="6">
+          <label for="tec-droids">Droids:</label>
+          <input type="number" id="tec-droids" name="tec-droids" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset>
-      <legend>Derived Stats</legend>
-      <label>Defense: <input type="number" id="derived-defense" readonly></label>
-      <label>Initiative: <input type="number" id="derived-initiative" readonly></label>
-      <label>Resolve: <input type="number" id="derived-resolve" readonly></label>
-      <label>Current Resolve: <input type="number" id="current-resolve"></label>
-    </fieldset>
+      <!-- The Force -->
+      <div class="attr-section">
+        <h3>The Force (FOR) <input type="number" id="for-dice" name="for-dice" min="1" max="6" class="dice-input"></h3>
+        <div class="skill-group">
+          <label for="for-alter">Alter:</label>
+          <input type="number" id="for-alter" name="for-alter" min="0" max="6">
+          <label for="for-control">Control:</label>
+          <input type="number" id="for-control" name="for-control" min="0" max="6">
+          <label for="for-sense">Sense:</label>
+          <input type="number" id="for-sense" name="for-sense" min="0" max="6">
+        </div>
+      </div>
 
-    <fieldset>
-      <legend>Wound Status</legend>
-      <label><input type="checkbox" id="status-staggered"> Staggered</label>
-      <label><input type="checkbox" id="status-stunned"> Stunned</label>
-      <label><input type="checkbox" id="status-downed"> Downed</label>
-    </fieldset>
-    <fieldset>
-      <legend>Data Management</legend>
-      <button type="button" onclick="printCharacterSheet()">Print</button>
-      <button type="button" onclick="saveToJSON()">Export to JSON</button>
-      <button type="button" onclick="loadFromJSON()">Import from JSON</button>
-      <button type="button" onclick="saveToCSV()">Export to CSV</button>
-      <input type="file" id="csv-upload" accept=".csv" onchange="loadFromCSV(event)" />
-      <button type="button" onclick="saveToSupabase()">Save to Supabase</button>
-    </fieldset>
+      <!-- Derived Stats -->
+      <h2>Derived Stats</h2>
+      <label for="defense">Defense:</label><input type="number" id="defense" name="defense" readonly>
+      <label for="initiative">Initiative:</label><input type="number" id="initiative" name="initiative" readonly>
+      <label for="resolve-max">Resolve (Max):</label><input type="number" id="resolve-max" name="resolve-max" readonly>
+      <label for="armor-dice">Armor Dice:</label><input type="number" id="armor-dice" name="armor-dice" min="0">
+    </section>
+
+    <!-- Current Status -->
+    <section id="current-status">
+      <h2>Current Status</h2>
+      <label for="current-resolve">Current Resolve:</label><input type="number" id="current-resolve" name="current-resolve" min="0">
+      <div class="status-checks">
+        <label><input type="checkbox" id="status-staggered" name="status-staggered"> Staggered</label>
+        <label><input type="checkbox" id="status-stunned" name="status-stunned"> Stunned</label>
+        <label><input type="checkbox" id="status-downed" name="status-downed"> Downed</label>
+      </div>
+    </section>
+
+    <!-- Inventory -->
+    <section id="inventory">
+      <h2>Inventory</h2>
+      <label for="equipment-select">Equipment:</label>
+      <select id="equipment-select" multiple></select>
+    </section>
+
+    <!-- Weapons -->
+    <section id="weapons">
+      <h2>Weapons</h2>
+      <table>
+        <thead>
+          <tr><th>Weapon</th><th>Skill</th><th>Damage</th><th>Special</th></tr>
+        </thead>
+        <tbody id="weapons-list"></tbody>
+      </table>
+    </section>
+
+    <!-- Armor -->
+    <section id="armor">
+      <h2>Armor</h2>
+      <table>
+        <thead>
+          <tr><th>Armor</th><th>Protection</th><th>Encumbrance</th><th>Special</th></tr>
+        </thead>
+        <tbody id="armor-list"></tbody>
+      </table>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources">
+      <label for="credits">Credits:</label><input type="number" id="credits" name="credits" min="0" value="0">
+      <label for="upgrade-points">Upgrade Points:</label><input type="number" id="upgrade-points" name="upgrade-points" min="0" value="0">
+      <label for="force-points">Force Points:</label><input type="number" id="force-points" name="force-points" min="0" value="0">
+    </section>
+
+    <!-- Buttons -->
+    <div id="button-group">
+      <button type="button" id="load-button">Load Character</button>
+      <button type="button" id="save-button">Save Character</button>
+      <button type="button" id="print-button">Print Character</button>
+    </div>
+
   </form>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
-<script src="script.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
