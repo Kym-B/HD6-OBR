@@ -27,16 +27,24 @@ const skillToId = {
 // Note: these '.from()' calls must match your Supabase table names exactly
 // Replace 'species' and 'roles' if your schema uses different table names
 
-async function fetchSpecies() {
+async function async function fetchSpecies() {
   const { data, error } = await supabase
     .from('species')
     .select('name, dex, kno, mec, per, str, tec, for');
   if (error) return console.error('Error fetching species:', error);
   data.forEach(s => {
+    // note: 'for' is a reserved word, so use bracket notation
     speciesData[s.name] = {
-      DEX: s.dex, KNO: s.kno, MEC: s.mec, PER: s.per,
-      STR: s.str, TEC: s.tec, FOR: s.for
+      DEX: s.dex,
+      KNO: s.kno,
+      MEC: s.mec,
+      PER: s.per,
+      STR: s.str,
+      TEC: s.tec,
+      FOR: s['for']
     };
+  });
+}
   });
 }
 
@@ -99,6 +107,7 @@ function updateSkills() {
 }
 
 // 5. Bootstrap on DOM ready
+// Ensure this script is loaded with <script type="module">
 document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all([fetchSpecies(), fetchRoles()]);
   populateSelectors();
@@ -109,3 +118,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateAttributes();
   updateSkills();
 });
+
+// Double-check that index.html includes: <script type="module" src="app.js"></script>
